@@ -2,10 +2,10 @@
 //怎么翻译的？
 //    易语言SDK相关内容复制过来，开启Copilot，一顿Tab就好了
 //    完全没过脑子，都是AI补全的，可能会有些问题
-//    如果真的有什么问题，请自行修改或建议反馈给作者或Github仓库提交pr
+//    如果真的有什么问题，请自行修改或反馈给作者或Github仓库提交pr
 //https://github.com/LazuliKao/OIVA_CSharpSDK/tree/main/OIVA_CSharp
-namespace OIVA_CSharp
-{
+namespace OIVA_CSharp.SDK
+{ 
     internal static class CQCode
     {
         //.子程序 CQ码_At, 文本型, 公开, @某人(at)

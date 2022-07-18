@@ -3,9 +3,9 @@
 //如有问题或API需要更新请联系作者：https://github.com/LazuliKao/OIVA_CSharpSDK/
 using System;
 using System.Runtime.InteropServices;
-namespace OIVA_CSharp
+namespace OIVA_CSharp.SDK
 {
-    internal static class OIVAConst
+    public static class OIVAConst
     {
         /// <summary> ArrayStruct </summary>
         public const int arr_cbSize = 16;
@@ -222,7 +222,7 @@ namespace OIVA_CSharp
         public const int 消息_拦截 = 1;
 
     }
-    internal partial class OIVADll : DllApi
+    public partial class OIVADll : DllApi
     {
         public OIVADll(int AuthCode) : base("OIVA.dll")
         {

@@ -4,7 +4,7 @@ using net.r_eg.Conari.Types;
 using System;
 using System.Runtime.InteropServices;
 
-namespace OIVA_CSharp
+namespace OIVA_CSharp.SDK
 {
     public abstract class DllApi
     {
@@ -48,7 +48,7 @@ namespace OIVA_CSharp
 
     }
 
-    internal partial class OIVADll
+    public partial class OIVADll
     {
         public int AuthCode = 0;
         public override T Bind<T>(string name)
@@ -57,13 +57,16 @@ namespace OIVA_CSharp
             {
                 return base.Bind<T>(name);
             }
+#if DEBUG
             catch (Exception ex)
             {
-#if DEBUG
                 if (AuthCode != 0)
                 {
                     AddLog(OIVAConst.Log_Warning, Main.AppId, $"Error ! Bind<T>({name}) {ex}");
                 }
+#else
+            catch
+            {
 #endif
                 return null;
             }

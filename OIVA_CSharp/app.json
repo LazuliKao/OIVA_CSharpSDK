@@ -1,0 +1,306 @@
+// oiva 的Json文件支持以 // 开头的注释。
+// 开发模式下，应用的 app.dll 及 app.json 文件须放在 dev/[appid]/ 目录下，应用 AppInfo 函数返回的内容须改为 appid
+// 如 appid=com.example.demo, 则dll及json文件需分别放在 dev/com.example.demo/app.dll、dev/com.example.demo/app.json
+// [重要] appid 规则见 https://docs.oiva.cc/#/develop/appid
+{
+	"ret": 1,									// 返回码，固定为1
+	"apiver": 4,								// Api版本，本SDK为4
+	"name": "OIVA样例应用",						// 应用名称
+	"version": "1.0.0",							// 应用版本
+	"version_id": 1,							// 应用顺序版本（每次发布时至少+1）
+	"author": "Example",						// 应用作者
+	"description": "OIVA样例应用(V4应用机制)",	// 应用说明
+	"event": [//事件列表，同一事件类型可重复定义（发布前请删除无用事件）
+		{
+			"id": 1,							// 事件ID（固定值，勿修改）
+			"type": 1,							// 事件类型（固定值，勿修改）
+			"name": "私聊消息处理",				// 事件名称
+			"function": "_eventPrivateMsg",		// 事件对应函数
+			"priority": 30000					// 事件优先级(参见 https://docs.oiva.cc/#/develop/event?id=priority)
+		},
+		{
+			"id": 2,
+			"type": 2,
+			"name": "群消息处理",
+			"function": "_eventGroupMsg",
+			"priority": 30000
+		},
+		{// 讨论组消息处理 已舍弃
+			"id": 3,
+			"type": 3,
+			"name": "讨论组消息处理",
+			"function": "_eventDiscussMsg",
+			"priority": 30000
+		},
+		{
+			"id": 4,
+			"type": 11,
+			"name": "群文件上传事件处理",
+			"function": "_eventGroupUpload",
+			"priority": 30000
+		},
+		{
+			"id": 5,
+			"type": 101,
+			"name": "群管理变动事件处理",
+			"function": "_eventSystem_GroupAdmin",
+			"priority": 30000
+		},
+		{
+			"id": 6,
+			"type": 102,
+			"name": "群成员减少事件处理",
+			"function": "_eventSystem_GroupMemberDecrease",
+			"priority": 30000
+		},
+		{
+			"id": 7,
+			"type": 103,
+			"name": "群成员增加事件处理",
+			"function": "_eventSystem_GroupMemberIncrease",
+			"priority": 30000
+		},
+		{
+			"id": 8,
+			"type": 104,
+			"name": "群禁言事件处理",
+			"function": "_eventSystem_GroupBan",
+			"priority": 30000
+		},
+		{
+			"id": 9,
+			"type": 105,
+			"name": "群精华消息事件处理",
+			"function": "_eventSystem_EssenceNews",
+			"priority": 30000
+		},
+		{
+			"id": 10,
+			"type": 106,
+			"name": "群内通知事件处理",
+			"function": "_eventSystem_GroupNotice",
+			"priority": 30000
+		},
+		{
+			"id": 11,
+			"type": 107,
+			"name": "群成员名片更新事件处理",
+			"function": "_eventSystem_GroupBusidCard",
+			"priority": 30000
+		},
+		{
+			"id": 12,
+			"type": 108,
+			"name": "群消息撤回事件处理",
+			"function": "_eventRevoke_Group",
+			"priority": 30000
+		},
+		{
+			"id": 20,
+			"type": 201,
+			"name": "好友已添加事件处理",
+			"function": "_eventFriend_Add",
+			"priority": 30000
+		},
+		{
+			"id": 21,
+			"type": 301,
+			"name": "好友添加请求处理",
+			"function": "_eventRequest_AddFriend",
+			"priority": 30000
+		},
+		{
+			"id": 22,
+			"type": 302,
+			"name": "群添加请求处理",
+			"function": "_eventRequest_AddGroup",
+			"priority": 30000
+		},
+		{
+			"id": 30,
+			"type": 401,
+			"name": "好友收到离线文件事件处理",
+			"function": "_eventFriend_File",
+			"priority": 30000
+		},
+		{
+			"id": 31,
+			"type": 402,
+			"name": "好友消息撤回事件处理",
+			"function": "_eventRevoke_Friend",
+			"priority": 30000
+		},
+		{
+			"id": 32,
+			"type": 403,
+			"name": "好友戳一戳事件处理",
+			"function": "_eventPoke_Friend",
+			"priority": 30000
+		},
+		{
+			"id": 40,
+			"type": 501,
+			"name": "其他客户端在线状态变更事件处理",
+			"function": "_eventSystem_OtherClientOnlineStatusChanges",
+			"priority": 30000
+		},
+		{
+			"id": 50,
+			"type": 601,
+			"name": "子频道消息处理",
+			"function": "_eventGuildMsg",
+			"priority": 30000
+		},
+		{
+			"id": 51,
+			"type": 602,
+			"name": "子频道消息表情贴更新处理",
+			"function": "_eventGuild_Emoji",
+			"priority": 30000
+		},
+		{
+			"id": 52,
+			"type": 603,
+			"name": "子频道信息更新处理",
+			"function": "_eventGuild_ChannelUpdated",
+			"priority": 30000
+		},
+		{
+			"id": 53,
+			"type": 604,
+			"name": "子频道创建处理",
+			"function": "_eventGuild_ChannelCreate",
+			"priority": 30000
+		},
+		{
+			"id": 54,
+			"type": 605,
+			"name": "子频道删除处理",
+			"function": "_eventGuild_ChannelDel",
+			"priority": 30000
+		},
+		{
+			"id": 55,
+			"type": 606,
+			"name": "子频道消息撤回事件处理",
+			"function": "_eventRevoke_Guild",
+			"priority": 30000
+		},
+		{
+			"id": 1001,
+			"type": 1001,
+			"name": "OIVA启动事件",
+			"priority": 30000,
+			"function": "_eventStartup"
+		},
+		{
+			"id": 1002,
+			"type": 1002,
+			"name": "OIVA关闭事件",
+			"priority": 30000,
+			"function": "_eventExit"
+		},
+		{
+			"id": 1003,
+			"type": 1003,
+			"name": "应用已被启用",
+			"priority": 30000,
+			"function": "_eventEnable"
+		},
+		{
+			"id": 1004,
+			"type": 1004,
+			"name": "应用将被停用",
+			"priority": 30000,
+			"function": "_eventDisable"
+		}
+	],
+	"menu": [// 设置菜单（发布前请删除无用菜单，如果无需设置菜单请全部删除）
+		{
+			"name": "设置A",			//菜单名称
+			"function": "_menuA"	//菜单对应函数
+		},
+		{
+			"name": "设置B",
+			"function": "_menuB"
+		}
+	],
+	"status": [// 悬浮窗状态（见 com.example.status 样例）
+		
+	],
+	"auth": [// 应用权限（发布前请删除无用权限）
+	200,		// [敏感]取Cookies			getCookies/getCsrfToken
+	300,		// 接收语音					getRecord
+	1001,		// 发送群消息				sendGroupMsg
+	1003,		// 发送消息					sendMsg
+	1006,		// 发送私聊消息				sendPrivateMsg
+	1100,		// [敏感]发送赞				sendLike
+	1200,		// [敏感]置群员移除			setGroupKick
+	1201,		// 置群员禁言				setGroupBan
+	1202,		// 置群管理员				setGroupAdmin
+	1203,		// 置全群禁言				setGroupWholeBan
+	1204,		// 置匿名群员禁言				setGroupAnonymousBan
+	1205,		// 置群匿名设置				setGroupAnonymous
+	1206,		// 置群成员名片				setGroupCard
+	1207,		// [敏感]置群退出				setGroupLeave
+	1208,		// 置群成员专属头衔			setGroupSpecialTitle
+	1300,		// 取群成员信息				getGroupMemberInfo
+	1301,		// 取陌生人信息				getStrangerInfo
+	1302,		// 取群信息					getGroupInfo
+	1303,		// 取群荣誉信息				getGroupHonorInfo
+	1400,		// [敏感]置讨论组退出			setDiscussLeave
+	1500,		// 置好友添加请求				setFriendAddRequest
+	1501,		// 置群添加请求				setGroupAddRequest
+	1600,		// 取群成员列表				getGroupMemberList
+	1601,		// 取群列表					getGroupList
+	1602,		// 取好友列表				getFriendList
+	1800,		// 撤回消息					deleteMsg
+	3001,		// [敏感]发群公告				sendGroupNotice
+	3101,		// [敏感]置群新名称			setGroupNewName
+	3201,		// 获取群系统消息				getGroupSystemMsg
+	3301,		// 取群历史消息记录			getGroupHistoricalNews
+	3401,		// 取群剩余艾特全体数			getGroupTotalAtRemainingNumber
+	3501,		// [敏感]上传群文件			uploadGroupFile
+	3601,		// 取群空间信息				getGroupSpaceInfo
+	3602,		// 取群根目录文件				getGroupRootdirectoryfile
+	3603,		// 取群子目录文件				getGroupSubdirectoryfile
+	3604,		// 取群文件链接				getGroupFileDownurl
+	3701,		// 置群精华消息				setGroupEssenceNews
+	3702,		// 取群精华消息				getGroupEssenceNews
+	3801,		// [敏感]置群头像				setGroupAvatar
+	4001,		// 取登录号信息				getRobotInfo
+	4002,		// 取用户VIP信息				getUserVipInfo
+	4003,		// 获取企点账号信息			getQidianAccountInfo
+	4101,		// 获取消息					getMessageInfo
+	4102,		// 获取合并转发内容			ggetForwardMsg
+	4201,		// 是否可以发送图片			canSendImage
+	4202,		// 是否可以发送语音			canSendVoice
+	4301,		// 接收图片					getImageInfo
+	4303,		// [敏感]下载文件到缓存目录	downloadFileCache
+	4401,		// 取版本信息				getVersion
+	4402,		// 取运行状态				getRunState
+	4403,		// 取Bot在线设备				getRobotOnlineDevice
+	4404,		// 获取在线机型				getModelShow
+	4405,		// 设置在线机型				setModelShow
+	4501,		// [敏感]删除好友				deleteFriend
+	4502,		// 获取单向好友列表			getUnidirectionalFriendList
+	4503,		// [敏感]删除单向好友			deleteUnidirectionalFriend
+	4601,		// 查链接安全性				checkUrlSafety
+	4701,		// [敏感]重载事件过滤器		overloadEventFilter
+	4702,		// [敏感]重启GOCQ			setRestart
+	4801,		// 图片 OCR					ocrImage
+	4802,		// 取频道系统内BOT的资料		getGuildServiceProfile
+	4803,		// 取频道列表				getGuildList
+	4804,		// 通过访客取频道元数据		getGuildMetaByGuest
+	4805,		// 取子频道列表				getGuildChannelList
+	4806,		// 取频道成员列表				getGuildMemberList
+	4807,		// 单独取频道成员信息			getGuildMemberProfile
+	4808,		// 发子频道消息				sendGuildChannelMsg
+	4900,		// 发送合并转发				sendForwardMsg
+	4901,		// 发送合并转发[群]			sendGroupForwardMsg
+	4902,		// 发送合并转发[私]			sendPrivateForwardMsg
+	9000,		// [隐藏]取中文分词			getWordSlices
+	9001		// [隐藏]对事件执行快速操作	HandleQuickOperation
+	// 注意。最后一个成员没有 , 符号(逗号)!!!!!!!
+	]
+}

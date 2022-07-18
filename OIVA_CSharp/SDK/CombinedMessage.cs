@@ -12,7 +12,7 @@ namespace OIVA_CSharp.SDK
     /// </summary>
     public class CombinedMessage
     {
-        private  OIVADll Api;
+        private OIVADll Api;
         private JArray json = new JArray();
         public CombinedMessage(OIVADll api)
         {
@@ -35,7 +35,7 @@ namespace OIVA_CSharp.SDK
         /// <param name="type">消息类型</param>
         /// <param name="text">消息内容/表情ID</param>
         /// <returns></returns>
-        public CombinedMessage AddCustomForwardMsg(string name, string uin, string type, string text)
+        public CombinedMessage AddCustomForward(string name, string uin, string type, string text)
         {
             json.Add(JToken.Parse(Api.SendForwardMsgGen(name, uin, type, text)));
             return this;
@@ -46,7 +46,7 @@ namespace OIVA_CSharp.SDK
         /// <param name="name">发送者显示名字</param>
         /// <param name="uin">发送者QQ号</param>
         /// <param name="content">消息内容</param>
-        public CombinedMessage AddCustomForwardMsgSim(string name, string uin, string content)
+        public CombinedMessage AddCustomForward(string name, string uin, string content)
         {
             json.Add(JToken.Parse(Api.SendForwardMsgSim(name, uin, content)));
             return this;
@@ -59,7 +59,7 @@ namespace OIVA_CSharp.SDK
         /// <param name="content">消息内容</param>
         /// <param name="seq">具体消息</param>
         /// <param name="time">发送时间戳</param>
-        public CombinedMessage AddCustomForwardMsgCom(string name, string uin, string content, string seq, string time)
+        public CombinedMessage AddCustomForward(string name, string uin, string content, string seq, string time)
         {
             json.Add(JToken.Parse(Api.SendForwardMsgCom(name, uin, content, seq, time)));
             return this;

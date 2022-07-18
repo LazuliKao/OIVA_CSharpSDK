@@ -8,8 +8,50 @@ using System.Text;
 using System.Threading.Tasks;
 namespace OIVA_CSharp
 {
+     public abstract class DllApi
+    {
+        private ConariL CL;
+        public virtual T Bind<T>(string name) where T : class
+        {
+            return CL.bindFunc<T>(name);
+        }
+        public DllApi(string dll)
+        {
+            CL = new ConariL(dll);
+        }
+        ~DllApi() => CL.Dispose();
+        [StructLayout(LayoutKind.Explicit)]
+        public class AnsiCharPtr : IDisposable
+        {
+            public AnsiCharPtr(string str)
+            {
+                if (str is null)
+                {
+                    data = Marshal.StringToHGlobalAnsi("");
+                }
+                else
+                {
+                    data = Marshal.StringToHGlobalAnsi(str);
+                }
+            }
+            [FieldOffset(0)]
+            private readonly IntPtr data;
+            [NativeType]
+            public static implicit operator IntPtr(AnsiCharPtr v)
+            {
+                return v.data;
+            }
+            public void Dispose()
+            {
+                Marshal.FreeHGlobal(data);
+            }
+        }
+
+
+    }
     internal static class OIVAConst
     {
+        /// <summary> ArrayStruct </summary>
         public const int arr_cbSize = 16;
         public const int arr_count = 4;
         public const int arr_hAlloctor = 0;
@@ -20,12 +62,16 @@ namespace OIVA_CSharp
         public const int CP_UTF8 = 65001;
         public const int CREATE_ALWAYS = 2;
         public const int FILE_ATTRIBUTE_NORMAL = 128;
+        /// <summary> Base64编码内容 </summary>
         public const string File_base64 = "base64://";
+        /// <summary> 网络文件 </summary>
         public const string File_links = "link://";
+        /// <summary> 本地文件 </summary>
         public const string File_local = "file:///";
         public const int GENERIC_READ = -2147483648;
         public const int GENERIC_WRITE = 1073741824;
         public const int HEAP_ZERO_MEMORY = 8;
+        /// <summary> HashTableStruct </summary>
         public const int ht_cbSize = 28;
         public const int ht_count = 12;
         public const int ht_eArray = 24;
@@ -35,22 +81,33 @@ namespace OIVA_CSharp
         public const int ht_tableLenth = 8;
         public const int ht_threshold = 16;
         public const int INFINITE = -1;
+        /// <summary> 未知错误 </summary>
         public const int JSON_ERROR = -1;
+        /// <summary> 参数错误 </summary>
         public const int JSON_INVALIDARG = -2;
+        /// <summary> 无效的属性名 </summary>
         public const int JSON_INVALIDNAME = -4;
+        /// <summary> 错误的值 </summary>
         public const int JSON_INVALIDVALUE = -6;
+        /// <summary> 内存错误 </summary>
         public const int JSON_MEMORY = -3;
+        /// <summary> 无下一个引号 </summary>
         public const int JSON_NONEXTQUOTE = -7;
+        /// <summary> 错误的父 </summary>
         public const int JSON_OBJECTPARENT = -5;
+        /// <summary> 成功 </summary>
         public const int JSON_OK = 0;
         public const int jv_cbSize = 40;
+        /// <summary> 是否文档 </summary>
         public const int jv_doc = 36;
         public const int jv_hashCode = 4;
         public const int jv_key = 8;
         public const int jv_next = 20;
         public const int jv_parent = 28;
+        /// <summary> 元数据 </summary>
         public const int jv_raw = 32;
         public const int jv_type = 24;
+        /// <summary> 8字节 </summary>
         public const int jv_value = 12;
         public const int jvp_isEnded = 3;
         public const int jvp_needName = 1;
@@ -70,16 +127,25 @@ namespace OIVA_CSharp
         public const int JVTYPE_STRING = 4;
         public const int JVTYPE_UNDEFINED = -1;
         public const int JV解析_忽略前后文本 = 2;
+        /// <summary> JVTYPE_LONG </summary>
         public const int JV类型_长整数型 = 2;
+        /// <summary> JVTYPE_OBJECT </summary>
         public const int JV类型_对象 = 6;
+        /// <summary> JVTYPE_NULL </summary>
         public const int JV类型_空 = 0;
+        /// <summary> JVTYPE_BOOL </summary>
         public const int JV类型_逻辑型 = 3;
+        /// <summary> JVTYPE_ARRAY </summary>
         public const int JV类型_数组 = 5;
+        /// <summary> JVTYPE_DOUBLE </summary>
         public const int JV类型_双精度型 = 1;
+        /// <summary> JVTYPE_UNDEFINED </summary>
         public const int JV类型_未定义 = -1;
+        /// <summary> JVTYPE_STRING </summary>
         public const int JV类型_文本型 = 4;
         public const int LCMAP_FULLWIDTH = 8388608;
         public const int LCMAP_HALFWIDTH = 4194304;
+        /// <summary> LinkListStruct </summary>
         public const int ll_cbSize = 24;
         public const int ll_count = 4;
         public const int ll_current = 12;
@@ -87,14 +153,23 @@ namespace OIVA_CSharp
         public const int ll_header = 16;
         public const int ll_isNewHeap = 20;
         public const int ll_valType = 8;
+        /// <summary> 调试       灰色 </summary>
         public const int Log_Debug = 0;
+        /// <summary> 错误       红色 </summary>
         public const int Log_Error = 30;
+        /// <summary> 致命错误   深红 </summary>
         public const int Log_Fatal = 40;
+        /// <summary> 信息       黑色 </summary>
         public const int Log_Info = 10;
+        /// <summary> 信息(接收) 蓝色 </summary>
         public const int Log_InfoRecv = 12;
+        /// <summary> 信息(发送) 绿色 </summary>
         public const int Log_InfoSend = 13;
+        /// <summary> 信息(成功) 紫色 </summary>
         public const int Log_InfoSuccess = 11;
+        /// <summary> 警告       橙色 </summary>
         public const int Log_Warning = 20;
+        /// <summary> NoteStruct </summary>
         public const int nd_cbSize = 8;
         public const int nd_next = 4;
         public const int nd_value = 0;
@@ -256,49 +331,10 @@ namespace OIVA_CSharp
         public const int 请求_群添加 = 1;
         public const int 请求_群邀请 = 2;
         public const int 请求_通过 = 1;
+        /// <summary> 将此消息继续传递给其他应用 </summary>
         public const int 消息_忽略 = 0;
+        /// <summary> 拦截此条消息，不再传递给其他应用 //注意：应用优先级设置为"最高"(10000)时，不得使用本返回值 </summary>
         public const int 消息_拦截 = 1;
-
-    }
-    public abstract class DllApi
-    {
-        private ConariL CL;
-        public virtual T Bind<T>(string name) where T : class
-        {
-            return CL.bindFunc<T>(name);
-        }
-        public DllApi(string dll)
-        {
-            CL = new ConariL(dll);
-        }
-        ~DllApi() => CL.Dispose();
-        [StructLayout(LayoutKind.Explicit)]
-        public class AnsiCharPtr : IDisposable
-        {
-            public AnsiCharPtr(string str)
-            {
-                if (str is null)
-                {
-                    data = Marshal.StringToHGlobalAnsi("");
-                }
-                else
-                {
-                    data = Marshal.StringToHGlobalAnsi(str);
-                }
-            }
-            [FieldOffset(0)]
-            private readonly IntPtr data;
-            [NativeType]
-            public static implicit operator IntPtr(AnsiCharPtr v)
-            {
-                return v.data;
-            }
-            public void Dispose()
-            {
-                Marshal.FreeHGlobal(data);
-            }
-        }
-
 
     }
     internal partial class OIVADll : DllApi
@@ -397,13 +433,15 @@ namespace OIVA_CSharp
         /// <summary>
         /// 加入日志
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="Priority">优先级；#Log_ 开头常量</param>,
         /// <param name="Type">日志类型</param>,
         /// <param name="Content">日志内容</param>
         /// <returns><see cref="int"/></returns>
         public int AddLog(int Priority, string Type, string Content)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(Priority={1},Type={2},Content={3})", "AddLog", Priority, Type, Content);
+#endif
             using (var Type_i = new AnsiCharPtr(Type))
             {
                 using (var Content_i = new AnsiCharPtr(Content))
@@ -418,10 +456,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 是否可以发送图片
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>
         /// <returns><see cref="bool"/></returns>
         public bool CanSendImage()
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}()", "CanSendImage");
+#endif
+
             return Va_canSendImage_func(AuthCode);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -430,10 +471,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 是否可以发送语音
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>
         /// <returns><see cref="bool"/></returns>
         public bool CanSendRecord()
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}()", "CanSendRecord");
+#endif
+
             return Va_canSendRecord_func(AuthCode);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -442,10 +486,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 是否可以发送语音
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>
         /// <returns><see cref="int"/></returns>
         public int CanSendVoice()
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}()", "CanSendVoice");
+#endif
+
             return Va_canSendVoice_func(AuthCode);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -454,11 +501,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 查链接安全性
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="url">url</param>
         /// <returns><see cref="int"/></returns>
         public int CheckUrlSafety(string url)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(url={1})", "CheckUrlSafety", url);
+#endif
             using (var url_i = new AnsiCharPtr(url))
             {
                 return Va_checkUrlSafety_func(AuthCode, url_i);
@@ -470,11 +519,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 删除好友
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="friend_id">目标账号</param>
         /// <returns><see cref="int"/></returns>
         public int DeleteFriend(long friend_id)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(friend_id={1})", "DeleteFriend", friend_id);
+#endif
+
             return Va_deleteFriend_func(AuthCode, friend_id);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -483,11 +535,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 撤回消息
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="MsgId">消息ID</param>
         /// <returns><see cref="int"/></returns>
         public int DeleteMsg(int MsgId)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(MsgId={1})", "DeleteMsg", MsgId);
+#endif
+
             return Va_deleteMsg_func(AuthCode, MsgId);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -496,11 +551,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 删除单项好友
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="user_id">目标账号</param>
         /// <returns><see cref="int"/></returns>
         public int DeleteUnidirectionalFriend(long user_id)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(user_id={1})", "DeleteUnidirectionalFriend", user_id);
+#endif
+
             return Va_deleteUnidirectionalFriend_func(AuthCode, user_id);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -509,13 +567,15 @@ namespace OIVA_CSharp
         /// <summary>
         /// 下载文件到缓存目录
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="Url">需要下载的文件链接地址</param>,
         /// <param name="ThreadCount">下载线程数</param>,
         /// <param name="Headers">自定义请求头多个用换行符分开(一行一个)</param>
         /// <returns><see cref="string"/></returns>
         public string DownloadFileCache(string Url, int ThreadCount, string Headers)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(Url={1},ThreadCount={2},Headers={3})", "DownloadFileCache", Url, ThreadCount, Headers);
+#endif
             using (var Url_i = new AnsiCharPtr(Url))
             {
                 using (var Headers_i = new AnsiCharPtr(Headers))
@@ -530,10 +590,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取应用目录(路径以  结尾)
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>
         /// <returns><see cref="string"/></returns>
         public string GetAppDirectory()
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}()", "GetAppDirectory");
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getAppDirectory_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -542,11 +605,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 获取合并转发内容
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="MsgId">根据消息ID获取消息内容</param>
         /// <returns><see cref="string"/></returns>
         public string GetForwardMsg(int MsgId)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(MsgId={1})", "GetForwardMsg", MsgId);
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getForwardMsg_func(AuthCode, MsgId));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -555,10 +621,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取好友列表
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>
         /// <returns><see cref="string"/></returns>
         public string GetFriendList()
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}()", "GetFriendList");
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getFriendList_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -567,11 +636,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取群精华消息
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="群号">群号</param>
         /// <returns><see cref="string"/></returns>
         public string GetGroupEssenceNews(long 群号)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(群号={1})", "GetGroupEssenceNews", 群号);
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getGroupEssenceNews_func(AuthCode, 群号));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -580,13 +652,15 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取群文件链接
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="群号">目标群</param>,
         /// <param name="文件ID">文件ID</param>,
         /// <param name="Busid">文件Busid</param>
         /// <returns><see cref="string"/></returns>
         public string GetGroupFileDownurl(long 群号, string 文件ID, long Busid)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(群号={1},文件ID={2},Busid={3})", "GetGroupFileDownurl", 群号, 文件ID, Busid);
+#endif
             using (var 文件ID_i = new AnsiCharPtr(文件ID))
             {
                 return Marshal.PtrToStringAnsi(Va_getGroupFileDownurl_func(AuthCode, 群号, 文件ID_i, Busid));
@@ -598,12 +672,15 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取群历史消息记录
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="群号">目标群</param>,
         /// <param name="消息SEQ">起始消息序号, 可通过 取消息信息 获取消息 获得；不提供起始序号将默认获取最新的消息</param>
         /// <returns><see cref="string"/></returns>
         public string GetGroupHistoricalNews(long 群号, int 消息SEQ)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(群号={1},消息SEQ={2})", "GetGroupHistoricalNews", 群号, 消息SEQ);
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getGroupHistoricalNews_func(AuthCode, 群号, 消息SEQ));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -612,12 +689,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// Va_getGroupHonorInfo
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="group_id">目标群</param>,
         /// <param name="type">要获取的群荣誉类型, 可传入 talkative performer legend strong_newbie emotion</param>
         /// <returns><see cref="string"/></returns>
         public string GetGroupHonorInfo(long group_id, string type)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(group_id={1},type={2})", "GetGroupHonorInfo", group_id, type);
+#endif
             using (var type_i = new AnsiCharPtr(type))
             {
                 return Marshal.PtrToStringAnsi(Va_getGroupHonorInfo_func(AuthCode, group_id, type_i));
@@ -629,12 +708,15 @@ namespace OIVA_CSharp
         /// <summary>
         /// 获取群信息
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="group_id">目标群</param>,
         /// <param name="无视缓存">无视缓存</param>
         /// <returns><see cref="string"/></returns>
         public string GetGroupInfo(long group_id, bool 无视缓存)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(group_id={1},无视缓存={2})", "GetGroupInfo", group_id, 无视缓存);
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getGroupInfo_func(AuthCode, group_id, 无视缓存));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -643,10 +725,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取群列表
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>
         /// <returns><see cref="string"/></returns>
         public string GetGroupList()
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}()", "GetGroupList");
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getGroupList_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -655,13 +740,16 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取群成员信息
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="群号">目标群</param>,
         /// <param name="帐号">目标帐号</param>,
         /// <param name="不使用缓存">默认为"假"，通常忽略本参数，仅在必要时使用</param>
         /// <returns><see cref="string"/></returns>
         public string GetGroupMemberInfo(long 群号, long 帐号, bool 不使用缓存)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(群号={1},帐号={2},不使用缓存={3})", "GetGroupMemberInfo", 群号, 帐号, 不使用缓存);
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getGroupMemberInfo_func(AuthCode, 群号, 帐号, 不使用缓存));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -670,11 +758,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取群成员列表
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="群号">目标帐号所在群</param>
         /// <returns><see cref="string"/></returns>
         public string GetGroupMemberList(long 群号)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(群号={1})", "GetGroupMemberList", 群号);
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getGroupMemberList_func(AuthCode, 群号));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -683,11 +774,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取群公告
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="群号">目标群</param>
         /// <returns><see cref="string"/></returns>
         public string GetGroupNotice(long 群号)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(群号={1})", "GetGroupNotice", 群号);
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getGroupNotice_func(AuthCode, 群号));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -696,11 +790,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取群根目录文件
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="群号">目标群</param>
         /// <returns><see cref="string"/></returns>
         public string GetGroupRootdirectoryfile(long 群号)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(群号={1})", "GetGroupRootdirectoryfile", 群号);
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getGroupRootdirectoryfile_func(AuthCode, 群号));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -709,11 +806,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取群空间信息
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="群号">目标群</param>
         /// <returns><see cref="string"/></returns>
         public string GetGroupSpaceInfo(long 群号)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(群号={1})", "GetGroupSpaceInfo", 群号);
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getGroupSpaceInfo_func(AuthCode, 群号));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -722,12 +822,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取群子目录文件
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="群号">目标群</param>,
         /// <param name="文件夹ID">文件夹ID</param>
         /// <returns><see cref="string"/></returns>
         public string GetGroupSubdirectoryfile(long 群号, string 文件夹ID)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(群号={1},文件夹ID={2})", "GetGroupSubdirectoryfile", 群号, 文件夹ID);
+#endif
             using (var 文件夹ID_i = new AnsiCharPtr(文件夹ID))
             {
                 return Marshal.PtrToStringAnsi(Va_getGroupSubdirectoryfile_func(AuthCode, 群号, 文件夹ID_i));
@@ -739,10 +841,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// Va_getGroupSystemMsg
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>
         /// <returns><see cref="string"/></returns>
         public string GetGroupSystemMsg()
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}()", "GetGroupSystemMsg");
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getGroupSystemMsg_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -751,11 +856,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取群剩余艾特全体数
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="群号">目标群</param>
         /// <returns><see cref="string"/></returns>
         public string GetGroupTotalAtRemainingNumber(long 群号)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(群号={1})", "GetGroupTotalAtRemainingNumber", 群号);
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getGroupTotalAtRemainingNumber_func(AuthCode, 群号));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -764,12 +872,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取子频道列表
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="GuildId">频道ID</param>,
         /// <param name="无视缓存">是否无视缓存</param>
         /// <returns><see cref="string"/></returns>
         public string GetGuildChannelList(string GuildId, bool 无视缓存)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(GuildId={1},无视缓存={2})", "GetGuildChannelList", GuildId, 无视缓存);
+#endif
             using (var GuildId_i = new AnsiCharPtr(GuildId))
             {
                 return Marshal.PtrToStringAnsi(Va_getGuildChannelList_func(AuthCode, GuildId_i, 无视缓存));
@@ -781,10 +891,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取频道列表
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>
         /// <returns><see cref="string"/></returns>
         public string GetGuildList()
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}()", "GetGuildList");
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getGuildList_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -793,12 +906,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取频道成员列表
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="GuildId">频道ID</param>,
         /// <param name="NextToken">翻页Token；为空的情况下, 将返回第一页的数据, 并在返回值附带下一页的Token</param>
         /// <returns><see cref="string"/></returns>
         public string GetGuildMemberList(string GuildId, string NextToken)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(GuildId={1},NextToken={2})", "GetGuildMemberList", GuildId, NextToken);
+#endif
             using (var GuildId_i = new AnsiCharPtr(GuildId))
             {
                 using (var NextToken_i = new AnsiCharPtr(NextToken))
@@ -813,12 +928,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 单独取频道成员信息
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="GuildId">频道ID</param>,
         /// <param name="UserId">用户ID(tiny_id)</param>
         /// <returns><see cref="string"/></returns>
         public string GetGuildMemberProfile(string GuildId, string UserId)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(GuildId={1},UserId={2})", "GetGuildMemberProfile", GuildId, UserId);
+#endif
             using (var GuildId_i = new AnsiCharPtr(GuildId))
             {
                 using (var UserId_i = new AnsiCharPtr(UserId))
@@ -833,11 +950,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 通过访客取频道元数据
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="GuildId">频道ID</param>
         /// <returns><see cref="string"/></returns>
         public string GetGuildMetaByGuest(string GuildId)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(GuildId={1})", "GetGuildMetaByGuest", GuildId);
+#endif
             using (var GuildId_i = new AnsiCharPtr(GuildId))
             {
                 return Marshal.PtrToStringAnsi(Va_getGuildMetaByGuest_func(AuthCode, GuildId_i));
@@ -849,10 +968,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取频道系统内BOT的资料
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>
         /// <returns><see cref="string"/></returns>
         public string GetGuildServiceProfile()
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}()", "GetGuildServiceProfile");
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getGuildServiceProfile_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -861,11 +983,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取图片信息
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="图片缓存名">如:0cb08e32204e32c41c73d7fee0633427.image</param>
         /// <returns><see cref="string"/></returns>
         public string GetImageInfo(string 图片缓存名)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(图片缓存名={1})", "GetImageInfo", 图片缓存名);
+#endif
             using (var 图片缓存名_i = new AnsiCharPtr(图片缓存名))
             {
                 return Marshal.PtrToStringAnsi(Va_getImageInfo_func(AuthCode, 图片缓存名_i));
@@ -877,10 +1001,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取登录昵称
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>
         /// <returns><see cref="string"/></returns>
         public string GetLoginNick()
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}()", "GetLoginNick");
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getLoginNick_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -889,10 +1016,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取登录账号
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>
         /// <returns><see cref="long"/></returns>
         public long GetLoginQQ()
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}()", "GetLoginQQ");
+#endif
+
             return Va_getLoginQQ_func(AuthCode);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -901,11 +1031,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取消息信息
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="MsgId">根据消息ID获取消息内容</param>
         /// <returns><see cref="string"/></returns>
         public string GetMessageInfo(int MsgId)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(MsgId={1})", "GetMessageInfo", MsgId);
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getMessageInfo_func(AuthCode, MsgId));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -914,11 +1047,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 获取在线机型
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="model">机型名称</param>
         /// <returns><see cref="string"/></returns>
         public string GetModelShow(string model)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(model={1})", "GetModelShow", model);
+#endif
             using (var model_i = new AnsiCharPtr(model))
             {
                 return Marshal.PtrToStringAnsi(Va_getModelShow_func(AuthCode, model_i));
@@ -930,10 +1065,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// Va_getQidianAccountInfo
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>
         /// <returns><see cref="string"/></returns>
         public string GetQidianAccountInfo()
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}()", "GetQidianAccountInfo");
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getQidianAccountInfo_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -942,12 +1080,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 接收语音
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="文件名">收到消息中的语音文件名(file)</param>,
         /// <param name="指定格式">应用所需的语音文件格式，目前支持 mp3,amr,wma,m4a,spx,ogg,wav,flac</param>
         /// <returns><see cref="string"/></returns>
         public string GetRecordV2(string 文件名, string 指定格式)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(文件名={1},指定格式={2})", "GetRecordV2", 文件名, 指定格式);
+#endif
             using (var 文件名_i = new AnsiCharPtr(文件名))
             {
                 using (var 指定格式_i = new AnsiCharPtr(指定格式))
@@ -962,10 +1102,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取登录号信息
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>
         /// <returns><see cref="string"/></returns>
         public string GetRobotInfo()
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}()", "GetRobotInfo");
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getRobotInfo_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -974,11 +1117,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取Bot在线设备
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="无视缓存">默认为假</param>
         /// <returns><see cref="string"/></returns>
         public string GetRobotOnlineDevice(bool 无视缓存)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(无视缓存={1})", "GetRobotOnlineDevice", 无视缓存);
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getRobotOnlineDevice_func(AuthCode, 无视缓存));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -987,10 +1133,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取运行状态
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>
         /// <returns><see cref="string"/></returns>
         public string GetRunState()
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}()", "GetRunState");
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getRunState_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -999,10 +1148,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取已登录时长
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>
         /// <returns><see cref="long"/></returns>
         public long GetRunTime()
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}()", "GetRunTime");
+#endif
+
             return Va_getRunTime_func(AuthCode);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1011,12 +1163,15 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取陌生人信息
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="账号">目标QQ</param>,
         /// <param name="不使用缓存">是否不使用缓存（使用缓存可能更新不及时，但响应更快）</param>
         /// <returns><see cref="string"/></returns>
         public string GetStrangerInfo(long 账号, bool 不使用缓存)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(账号={1},不使用缓存={2})", "GetStrangerInfo", 账号, 不使用缓存);
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getStrangerInfo_func(AuthCode, 账号, 不使用缓存));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1025,10 +1180,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取单项好友列表
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>
         /// <returns><see cref="string"/></returns>
         public string GetUnidirectionalFriendList()
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}()", "GetUnidirectionalFriendList");
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getUnidirectionalFriendList_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1037,11 +1195,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取用户VIP信息
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="账号">目标QQ</param>
         /// <returns><see cref="string"/></returns>
         public string GetUserVipInfo(long 账号)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(账号={1})", "GetUserVipInfo", 账号);
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getUserVipInfo_func(AuthCode, 账号));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1050,10 +1211,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取版本信息
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>
         /// <returns><see cref="string"/></returns>
         public string GetVersion()
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}()", "GetVersion");
+#endif
+
             return Marshal.PtrToStringAnsi(Va_getVersion_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1062,11 +1226,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 取中文分词
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="content">欲被分词的文本</param>
         /// <returns><see cref="string"/></returns>
         public string GetWordSlices(string content)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(content={1})", "GetWordSlices", content);
+#endif
             using (var content_i = new AnsiCharPtr(content))
             {
                 return Marshal.PtrToStringAnsi(Va_getWordSlices_func(AuthCode, content_i));
@@ -1078,12 +1244,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// Va_HandleQuickOperation
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="context">事件数据对象, 可做精简, 如去掉 message 等无用字段</param>,
         /// <param name="operation">快速操作对象, 例如 {"ban": true, "reply": "请不要说脏话"}</param>
         /// <returns><see cref="int"/></returns>
         public int HandleQuickOperation(string context, string operation)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(context={1},operation={2})", "HandleQuickOperation", context, operation);
+#endif
             using (var context_i = new AnsiCharPtr(context))
             {
                 using (var operation_i = new AnsiCharPtr(operation))
@@ -1098,11 +1266,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// Va_ocrImage
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="imageId">图片ID</param>
         /// <returns><see cref="string"/></returns>
         public string OcrImage(string imageId)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(imageId={1})", "OcrImage", imageId);
+#endif
             using (var imageId_i = new AnsiCharPtr(imageId))
             {
                 return Marshal.PtrToStringAnsi(Va_ocrImage_func(AuthCode, imageId_i));
@@ -1114,10 +1284,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 重载事件过滤器
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>
         /// <returns><see cref="bool"/></returns>
         public bool OverloadEventFilter()
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}()", "OverloadEventFilter");
+#endif
+
             return Va_overloadEventFilter_func(AuthCode);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1126,13 +1299,15 @@ namespace OIVA_CSharp
         /// <summary>
         /// 发送合并转发消息
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="MsgType">1为好友；2为群组；</param>,
         /// <param name="AimsId">目标ID；若发送群消息则填写群号反之填写QQ帐号</param>,
         /// <param name="Messages">自定义转发消息, 具体看</param>
         /// <returns><see cref="int"/></returns>
         public int SendForwardMsg(int MsgType, long AimsId, string Messages)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(MsgType={1},AimsId={2},Messages={3})", "SendForwardMsg", MsgType, AimsId, Messages);
+#endif
             using (var Messages_i = new AnsiCharPtr(Messages))
             {
                 return Va_sendForwardMsg_func(AuthCode, MsgType, AimsId, Messages_i);
@@ -1152,6 +1327,9 @@ namespace OIVA_CSharp
         /// <returns><see cref="string"/></returns>
         public string SendForwardMsgCom(string Name, string Uin, string Content, string Seq, string Time)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(Name={1},Uin={2},Content={3},Seq={4},Time={5})", "SendForwardMsgCom", Name, Uin, Content, Seq, Time);
+#endif
             using (var Name_i = new AnsiCharPtr(Name))
             {
                 using (var Uin_i = new AnsiCharPtr(Uin))
@@ -1182,6 +1360,9 @@ namespace OIVA_CSharp
         /// <returns><see cref="string"/></returns>
         public string SendForwardMsgGen(string Name, string Uin, string Type, string Text)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(Name={1},Uin={2},Type={3},Text={4})", "SendForwardMsgGen", Name, Uin, Type, Text);
+#endif
             using (var Name_i = new AnsiCharPtr(Name))
             {
                 using (var Uin_i = new AnsiCharPtr(Uin))
@@ -1206,6 +1387,9 @@ namespace OIVA_CSharp
         /// <returns><see cref="string"/></returns>
         public string SendForwardMsgId(string MsgId)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(MsgId={1})", "SendForwardMsgId", MsgId);
+#endif
             using (var MsgId_i = new AnsiCharPtr(MsgId))
             {
                 return Marshal.PtrToStringAnsi(Va_sendForwardMsgId_func(MsgId_i));
@@ -1223,6 +1407,9 @@ namespace OIVA_CSharp
         /// <returns><see cref="string"/></returns>
         public string SendForwardMsgSim(string Name, string Uin, string Content)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(Name={1},Uin={2},Content={3})", "SendForwardMsgSim", Name, Uin, Content);
+#endif
             using (var Name_i = new AnsiCharPtr(Name))
             {
                 using (var Uin_i = new AnsiCharPtr(Uin))
@@ -1240,12 +1427,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 发送合并转发消息【群】
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="GroupId">群号</param>,
         /// <param name="Messages">自定义转发消息, 具体看</param>
         /// <returns><see cref="int"/></returns>
         public int SendGroupForwardMsg(long GroupId, string Messages)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(GroupId={1},Messages={2})", "SendGroupForwardMsg", GroupId, Messages);
+#endif
             using (var Messages_i = new AnsiCharPtr(Messages))
             {
                 return Va_sendGroupForwardMsg_func(AuthCode, GroupId, Messages_i);
@@ -1257,13 +1446,15 @@ namespace OIVA_CSharp
         /// <summary>
         /// 发送群消息
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="GroupId">目标群号</param>,
         /// <param name="msg">要发送的群消息</param>,
         /// <param name="不解析CQ码">可空；消息内容是否作为纯文本发送(即不解析CQ码)</param>
         /// <returns><see cref="int"/></returns>
         public int SendGroupMsg(long GroupId, string msg, bool 不解析CQ码)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(GroupId={1},msg={2},不解析CQ码={3})", "SendGroupMsg", GroupId, msg, 不解析CQ码);
+#endif
             using (var msg_i = new AnsiCharPtr(msg))
             {
                 return Va_sendGroupMsg_func(AuthCode, GroupId, msg_i, 不解析CQ码);
@@ -1275,13 +1466,15 @@ namespace OIVA_CSharp
         /// <summary>
         /// 发群公告
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="GroupId">群号</param>,
         /// <param name="Notice">公告内容</param>,
         /// <param name="Image">公告图片如:/abc.png</param>
         /// <returns><see cref="int"/></returns>
         public int SendGroupNotice(long GroupId, string Notice, string Image)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(GroupId={1},Notice={2},Image={3})", "SendGroupNotice", GroupId, Notice, Image);
+#endif
             using (var Notice_i = new AnsiCharPtr(Notice))
             {
                 using (var Image_i = new AnsiCharPtr(Image))
@@ -1296,7 +1489,6 @@ namespace OIVA_CSharp
         /// <summary>
         /// Va_sendGroupTemporaryMsg
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="QQId">目标账号</param>,
         /// <param name="GroupId">目标群号</param>,
         /// <param name="msg">要发送的群消息</param>,
@@ -1304,6 +1496,9 @@ namespace OIVA_CSharp
         /// <returns><see cref="int"/></returns>
         public int SendGroupTemporaryMsg(long QQId, long GroupId, string msg, bool 不解析CQ码)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(QQId={1},GroupId={2},msg={3},不解析CQ码={4})", "SendGroupTemporaryMsg", QQId, GroupId, msg, 不解析CQ码);
+#endif
             using (var msg_i = new AnsiCharPtr(msg))
             {
                 return Va_sendGroupTemporaryMsg_func(AuthCode, QQId, GroupId, msg_i, 不解析CQ码);
@@ -1315,13 +1510,15 @@ namespace OIVA_CSharp
         /// <summary>
         /// 发子频道消息
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="GuildId">频道ID</param>,
         /// <param name="ChannelId">子频道ID</param>,
         /// <param name="Message">消息, 与原有消息类型相同</param>
         /// <returns><see cref="string"/></returns>
         public string SendGuildChannelMsg(string GuildId, string ChannelId, string Message)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(GuildId={1},ChannelId={2},Message={3})", "SendGuildChannelMsg", GuildId, ChannelId, Message);
+#endif
             using (var GuildId_i = new AnsiCharPtr(GuildId))
             {
                 using (var ChannelId_i = new AnsiCharPtr(ChannelId))
@@ -1339,7 +1536,6 @@ namespace OIVA_CSharp
         /// <summary>
         /// 发送消息
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="MsgType">1为好友；2为群组；</param>,
         /// <param name="AimsId">目标ID；若发送群消息则填写群号反之填写QQ账号</param>,
         /// <param name="Msg">要发送的内容</param>,
@@ -1347,6 +1543,9 @@ namespace OIVA_CSharp
         /// <returns><see cref="int"/></returns>
         public int SendMsg(int MsgType, long AimsId, string Msg, bool 不解析CQ码)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(MsgType={1},AimsId={2},Msg={3},不解析CQ码={4})", "SendMsg", MsgType, AimsId, Msg, 不解析CQ码);
+#endif
             using (var Msg_i = new AnsiCharPtr(Msg))
             {
                 return Va_sendMsg_func(AuthCode, MsgType, AimsId, Msg_i, 不解析CQ码);
@@ -1358,12 +1557,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 发送合并转发消息【私】
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="UserId">QQ帐号</param>,
         /// <param name="Messages">自定义转发消息, 具体看</param>
         /// <returns><see cref="int"/></returns>
         public int SendPrivateForwardMsg(long UserId, string Messages)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(UserId={1},Messages={2})", "SendPrivateForwardMsg", UserId, Messages);
+#endif
             using (var Messages_i = new AnsiCharPtr(Messages))
             {
                 return Va_sendPrivateForwardMsg_func(AuthCode, UserId, Messages_i);
@@ -1375,13 +1576,15 @@ namespace OIVA_CSharp
         /// <summary>
         /// 发送私聊消息
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="QQId">目标帐号</param>,
         /// <param name="msg">要发送的群消息</param>,
         /// <param name="不解析CQ码">可空；消息内容是否作为纯文本发送(即不解析CQ码)</param>
         /// <returns><see cref="int"/></returns>
         public int SendPrivateMsg(long QQId, string msg, bool 不解析CQ码)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(QQId={1},msg={2},不解析CQ码={3})", "SendPrivateMsg", QQId, msg, 不解析CQ码);
+#endif
             using (var msg_i = new AnsiCharPtr(msg))
             {
                 return Va_sendPrivateMsg_func(AuthCode, QQId, msg_i, 不解析CQ码);
@@ -1393,11 +1596,13 @@ namespace OIVA_CSharp
         /// <summary>
         /// 加入致命错误日志
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="Content">日志内容</param>
         /// <returns><see cref="int"/></returns>
         public int SetFatal(string Content)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(Content={1})", "SetFatal", Content);
+#endif
             using (var Content_i = new AnsiCharPtr(Content))
             {
                 return Va_setFatal_func(AuthCode, Content_i);
@@ -1409,13 +1614,15 @@ namespace OIVA_CSharp
         /// <summary>
         /// 置好友添加请求
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="请求反馈标识">请求事件收到的“反馈标识”参数。</param>,
         /// <param name="反馈类型">#请求_通过 或 #请求_拒绝。</param>,
         /// <param name="好友备注">添加后的好友备注（仅在同意时有效）</param>
         /// <returns><see cref="int"/></returns>
         public int SetFriendAddRequest(string 请求反馈标识, int 反馈类型, string 好友备注)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(请求反馈标识={1},反馈类型={2},好友备注={3})", "SetFriendAddRequest", 请求反馈标识, 反馈类型, 好友备注);
+#endif
             using (var 请求反馈标识_i = new AnsiCharPtr(请求反馈标识))
             {
                 using (var 好友备注_i = new AnsiCharPtr(好友备注))
@@ -1430,7 +1637,6 @@ namespace OIVA_CSharp
         /// <summary>
         /// 置群添加请求
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="请求反馈标识">请求事件收到的“反馈标识”参数。</param>,
         /// <param name="请求类型">根据请求事件的子类型区分 #请求_群添加 或 #请求_群邀请。</param>,
         /// <param name="反馈类型">#请求_通过 或 #请求_拒绝。</param>,
@@ -1438,6 +1644,9 @@ namespace OIVA_CSharp
         /// <returns><see cref="int"/></returns>
         public int SetGroupAddRequest(string 请求反馈标识, int 请求类型, int 反馈类型, string 拒绝理由)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(请求反馈标识={1},请求类型={2},反馈类型={3},拒绝理由={4})", "SetGroupAddRequest", 请求反馈标识, 请求类型, 反馈类型, 拒绝理由);
+#endif
             using (var 请求反馈标识_i = new AnsiCharPtr(请求反馈标识))
             {
                 using (var 拒绝理由_i = new AnsiCharPtr(拒绝理由))
@@ -1452,13 +1661,16 @@ namespace OIVA_CSharp
         /// <summary>
         /// 置群管理员
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="群号">目标群</param>,
         /// <param name="帐号">目标帐号</param>,
         /// <param name="成为管理员">真/设置管理员 假/取消管理员</param>
         /// <returns><see cref="int"/></returns>
         public int SetGroupAdmin(long 群号, long 帐号, bool 成为管理员)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(群号={1},帐号={2},成为管理员={3})", "SetGroupAdmin", 群号, 帐号, 成为管理员);
+#endif
+
             return Va_setGroupAdmin_func(AuthCode, 群号, 帐号, 成为管理员);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1467,13 +1679,15 @@ namespace OIVA_CSharp
         /// <summary>
         /// 置匿名群员禁言
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="群号">目标群</param>,
         /// <param name="匿名">群消息事件收到的“匿名”参数</param>,
         /// <param name="禁言时间">禁言的时间，单位为秒。不支持解禁</param>
         /// <returns><see cref="int"/></returns>
         public int SetGroupAnonymousBan(long 群号, string 匿名, long 禁言时间)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(群号={1},匿名={2},禁言时间={3})", "SetGroupAnonymousBan", 群号, 匿名, 禁言时间);
+#endif
             using (var 匿名_i = new AnsiCharPtr(匿名))
             {
                 return Va_setGroupAnonymousBan_func(AuthCode, 群号, 匿名_i, 禁言时间);
@@ -1485,13 +1699,15 @@ namespace OIVA_CSharp
         /// <summary>
         /// 置群头像
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="群号">目标群</param>,
         /// <param name="图片">图片绝对路径；本地文件：C:Users.png 或URL：https://www.baidu.com/1.png 或Base64编码后的图片</param>,
         /// <param name="使用缓存">表示是否使用已缓存的文件</param>
         /// <returns><see cref="int"/></returns>
         public int SetGroupAvatar(long 群号, string 图片, bool 使用缓存)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(群号={1},图片={2},使用缓存={3})", "SetGroupAvatar", 群号, 图片, 使用缓存);
+#endif
             using (var 图片_i = new AnsiCharPtr(图片))
             {
                 return Va_setGroupAvatar_func(AuthCode, 群号, 图片_i, 使用缓存);
@@ -1503,13 +1719,16 @@ namespace OIVA_CSharp
         /// <summary>
         /// 置群员禁言
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="群号">目标群</param>,
         /// <param name="帐号">目标帐号</param>,
         /// <param name="禁言时间">禁言的时间，单位为秒。如果要解禁，这里填写0</param>
         /// <returns><see cref="int"/></returns>
         public int SetGroupBan(long 群号, long 帐号, long 禁言时间)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(群号={1},帐号={2},禁言时间={3})", "SetGroupBan", 群号, 帐号, 禁言时间);
+#endif
+
             return Va_setGroupBan_func(AuthCode, 群号, 帐号, 禁言时间);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1518,13 +1737,15 @@ namespace OIVA_CSharp
         /// <summary>
         /// 置群员名片
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="群号">目标群</param>,
         /// <param name="帐号">目标帐号</param>,
         /// <param name="名片">新群名片,为空则不设设置名片</param>
         /// <returns><see cref="int"/></returns>
         public int SetGroupCard(long 群号, long 帐号, string 名片)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(群号={1},帐号={2},名片={3})", "SetGroupCard", 群号, 帐号, 名片);
+#endif
             using (var 名片_i = new AnsiCharPtr(名片))
             {
                 return Va_setGroupCard_func(AuthCode, 群号, 帐号, 名片_i);
@@ -1536,12 +1757,15 @@ namespace OIVA_CSharp
         /// <summary>
         /// 置群精华消息
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="消息ID">消息ID</param>,
         /// <param name="设为精华消息">可空；默认为真；真为设置精华消息，假为移除</param>
         /// <returns><see cref="int"/></returns>
         public int SetGroupEssenceNews(int 消息ID, bool 设为精华消息)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(消息ID={1},设为精华消息={2})", "SetGroupEssenceNews", 消息ID, 设为精华消息);
+#endif
+
             return Va_setGroupEssenceNews_func(AuthCode, 消息ID, 设为精华消息);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1550,13 +1774,16 @@ namespace OIVA_CSharp
         /// <summary>
         /// 置群员移除
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="群号">目标群</param>,
         /// <param name="帐号">目标帐号</param>,
         /// <param name="拒绝再加群">如果为真，则“不再接收此人加群申请”，请慎用。留空为假</param>
         /// <returns><see cref="int"/></returns>
         public int SetGroupKick(long 群号, long 帐号, bool 拒绝再加群)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(群号={1},帐号={2},拒绝再加群={3})", "SetGroupKick", 群号, 帐号, 拒绝再加群);
+#endif
+
             return Va_setGroupKick_func(AuthCode, 群号, 帐号, 拒绝再加群);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1565,12 +1792,15 @@ namespace OIVA_CSharp
         /// <summary>
         /// 置群退出
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="群号">目标群</param>,
         /// <param name="是否解散">默认为假 真/解散本群(群主) 假/退出本群(管理、群成员)</param>
         /// <returns><see cref="int"/></returns>
         public int SetGroupLeave(long 群号, bool 是否解散)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(群号={1},是否解散={2})", "SetGroupLeave", 群号, 是否解散);
+#endif
+
             return Va_setGroupLeave_func(AuthCode, 群号, 是否解散);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1579,12 +1809,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 置群新名称
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="群号">目标群</param>,
         /// <param name="群名称">新的群名称</param>
         /// <returns><see cref="int"/></returns>
         public int SetGroupNewName(long 群号, string 群名称)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(群号={1},群名称={2})", "SetGroupNewName", 群号, 群名称);
+#endif
             using (var 群名称_i = new AnsiCharPtr(群名称))
             {
                 return Va_setGroupNewName_func(AuthCode, 群号, 群名称_i);
@@ -1596,7 +1828,6 @@ namespace OIVA_CSharp
         /// <summary>
         /// 置群成员专属头衔
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="群号">目标群</param>,
         /// <param name="帐号">目标帐号</param>,
         /// <param name="头衔">如果要删除，这里填空</param>,
@@ -1604,6 +1835,9 @@ namespace OIVA_CSharp
         /// <returns><see cref="int"/></returns>
         public int SetGroupSpecialTitle(long 群号, long 帐号, string 头衔, long 过期时间)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(群号={1},帐号={2},头衔={3},过期时间={4})", "SetGroupSpecialTitle", 群号, 帐号, 头衔, 过期时间);
+#endif
             using (var 头衔_i = new AnsiCharPtr(头衔))
             {
                 return Va_setGroupSpecialTitle_func(AuthCode, 群号, 帐号, 头衔_i, 过期时间);
@@ -1615,12 +1849,15 @@ namespace OIVA_CSharp
         /// <summary>
         /// 置全群禁言
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="群号">目标群</param>,
         /// <param name="开启禁言">真/开启 假/关闭</param>
         /// <returns><see cref="int"/></returns>
         public int SetGroupWholeBan(long 群号, bool 开启禁言)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(群号={1},开启禁言={2})", "SetGroupWholeBan", 群号, 开启禁言);
+#endif
+
             return Va_setGroupWholeBan_func(AuthCode, 群号, 开启禁言);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1629,12 +1866,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 设置在线机型
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="model">机型名称</param>,
         /// <param name="model_show">自定义文字</param>
         /// <returns><see cref="int"/></returns>
         public int SetModelShow(string model, string model_show)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(model={1},model_show={2})", "SetModelShow", model, model_show);
+#endif
             using (var model_i = new AnsiCharPtr(model))
             {
                 using (var model_show_i = new AnsiCharPtr(model_show))
@@ -1649,7 +1888,6 @@ namespace OIVA_CSharp
         /// <summary>
         /// Va_setQQProfile
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="nickname">昵称；</param>,
         /// <param name="company">公司；</param>,
         /// <param name="email">邮箱；</param>,
@@ -1658,6 +1896,9 @@ namespace OIVA_CSharp
         /// <returns><see cref="int"/></returns>
         public int SetQQProfile(string nickname, string company, string email, string college, string personalNote)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(nickname={1},company={2},email={3},college={4},personalNote={5})", "SetQQProfile", nickname, company, email, college, personalNote);
+#endif
             using (var nickname_i = new AnsiCharPtr(nickname))
             {
                 using (var company_i = new AnsiCharPtr(company))
@@ -1681,11 +1922,14 @@ namespace OIVA_CSharp
         /// <summary>
         /// 重启GOCQ
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="delay">要延迟的毫秒数, 默认0, 如果默认情况下无法重启, 可以尝试设置延迟为 2000 左右</param>
         /// <returns><see cref="bool"/></returns>
         public bool SetRestart(int delay)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(delay={1})", "SetRestart", delay);
+#endif
+
             return Va_setRestart_func(AuthCode, delay);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1694,7 +1938,6 @@ namespace OIVA_CSharp
         /// <summary>
         /// 上传群文件
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="group_id">群号</param>,
         /// <param name="file">本地文件路径</param>,
         /// <param name="name">储存名称</param>,
@@ -1702,6 +1945,9 @@ namespace OIVA_CSharp
         /// <returns><see cref="int"/></returns>
         public int UploadGroupFile(long group_id, string file, string name, string folder)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(group_id={1},file={2},name={3},folder={4})", "UploadGroupFile", group_id, file, name, folder);
+#endif
             using (var file_i = new AnsiCharPtr(file))
             {
                 using (var name_i = new AnsiCharPtr(name))
@@ -1719,13 +1965,15 @@ namespace OIVA_CSharp
         /// <summary>
         /// 发送私聊文件
         /// </summary>
-        /// <param name="AuthCode">AuthCode</param>,
         /// <param name="QQID">QQ号</param>,
         /// <param name="file">本地文件路径</param>,
         /// <param name="name">发送文件名称</param>
         /// <returns><see cref="int"/></returns>
         public int UploadPrivateFile(long QQID, string file, string name)
         {
+#if DEBUG //调试信息 ，仅DEBUG编译可见
+            OutputDebugText("{0}(QQID={1},file={2},name={3})", "UploadPrivateFile", QQID, file, name);
+#endif
             using (var file_i = new AnsiCharPtr(file))
             {
                 using (var name_i = new AnsiCharPtr(name))

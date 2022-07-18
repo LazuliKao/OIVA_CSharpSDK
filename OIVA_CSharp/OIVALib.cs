@@ -26,5 +26,19 @@ namespace OIVA_CSharp
                 return null;
             }
         }
+#if DEBUG
+        /// <summary>
+        /// 输出调试信息
+        /// 仅DEBUG编译可用
+        /// 插件信息输出请使用Api.AddLog函数
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="args"></param>
+        public void OutputDebugText(string text, string funcname, params object[] args)
+        {
+            if (funcname == "AddLog") return;//避免死循环（堆栈溢出）
+            AddLog(OIVAConst.Log_Debug, Main.AppId, string.Format(text, funcname, args));
+        }
+#endif
     }
 }

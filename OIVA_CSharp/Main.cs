@@ -106,7 +106,7 @@ namespace OIVA_CSharp
         [DllExport("_eventFriend_Add")]
         public static int EventFriend_Add(int subType, long sendTime, long fromAccount)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=401 好友事件-收到离线文件
@@ -119,7 +119,7 @@ namespace OIVA_CSharp
         [DllExport("_eventFriend_File")]
         public static int EventFriend_File(int subType, long sendTime, long fromAccount, string file)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=2 群消息
@@ -136,7 +136,7 @@ namespace OIVA_CSharp
         [DllExport("_eventGroupMsg")]
         public static int EventGroupMsg(int subType, long sendTime, int msgId, long fromGroup, long fromAccount, string fromAnonymous, string msg, int font)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=11 群事件-群文件上传
@@ -150,7 +150,7 @@ namespace OIVA_CSharp
         [DllExport("_eventGroupUpload")]
         public static int EventGroupUpload(int subType, long sendTime, long fromGroup, long fromAccount, string file)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=604 频道事件-子频道创建
@@ -166,7 +166,7 @@ namespace OIVA_CSharp
         [DllExport("_eventGuild_ChannelCreate")]
         public static int EventGuild_ChannelCreate(int subType, long sendTime, string guildId, string channelId, long fromAccount, string beingOperateAccount, string channel_info)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=605 频道事件-子频道删除
@@ -182,7 +182,7 @@ namespace OIVA_CSharp
         [DllExport("_eventGuild_ChannelDel")]
         public static int EventGuild_ChannelDel(int subType, long sendTime, string guildId, string channelId, long fromAccount, string beingOperateAccount, string channel_info)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=603 频道事件-子频道信息更新
@@ -199,7 +199,7 @@ namespace OIVA_CSharp
         [DllExport("_eventGuild_ChannelUpdated")]
         public static int EventGuild_ChannelUpdated(int subType, long sendTime, string guildId, string channelId, long fromAccount, string beingOperateAccount, string old_info, string new_info)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=602 频道事件-频道消息表情贴更新
@@ -215,7 +215,7 @@ namespace OIVA_CSharp
         [DllExport("_eventGuild_Emoji")]
         public static int EventGuild_Emoji(int subType, long sendTime, string msgId, string guildId, string channelId, string fromAccount, string current_reactions)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=601 频道消息
@@ -232,7 +232,7 @@ namespace OIVA_CSharp
         [DllExport("_eventGuildMsg")]
         public static int EventGuildMsg(int subType, long sendTime, string msgId, string guildId, string channelId, string senderId, string senderNickName, string msg)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=403 好友事件-戳一戳
@@ -246,7 +246,7 @@ namespace OIVA_CSharp
         [DllExport("_eventPoke_Friend")]
         public static int EventPoke_Friend(int subType, long sendTime, long senderId, long fromAccount, long beingOperateAccount)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=1 私聊消息
@@ -261,7 +261,7 @@ namespace OIVA_CSharp
         [DllExport("_eventPrivateMsg")]
         public static int EventPrivateMsg(int subType, long sendTime, int msgId, long fromAccount, string msg, int font)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=301 请求-好友添加
@@ -275,7 +275,7 @@ namespace OIVA_CSharp
         [DllExport("_eventRequest_AddFriend")]
         public static int EventRequest_AddFriend(int subType, long sendTime, long fromAccount, string msg, string responseFlag)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=302 请求-群添加
@@ -290,7 +290,7 @@ namespace OIVA_CSharp
         [DllExport("_eventRequest_AddGroup")]
         public static int EventRequest_AddGroup(int subType, long sendTime, long fromGroup, long fromAccount, string msg, string responseFlag)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=402 好友事件-消息撤回
@@ -303,7 +303,7 @@ namespace OIVA_CSharp
         [DllExport("_eventRevoke_Friend")]
         public static int EventRevoke_Friend(int subType, long sendTime, int msgId, long fromAccount)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=108 群事件-消息撤回
@@ -318,7 +318,7 @@ namespace OIVA_CSharp
         [DllExport("_eventRevoke_Group")]
         public static int EventRevoke_Group(int subType, long sendTime, int msgId, long fromGroup, long fromAccount, long beingOperateAccount)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=605 频道事件-消息撤回
@@ -334,7 +334,7 @@ namespace OIVA_CSharp
         [DllExport("_eventRevoke_Guild")]
         public static int EventRevoke_Guild(int subType, long sendTime, string msgId, string guildId, string channelId, long fromAccount, string beingOperateAccount)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=1001 OIVA启动
@@ -343,7 +343,7 @@ namespace OIVA_CSharp
         [DllExport("_eventStartup")]
         public static int EventStartup()
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=105 群事件-精华消息
@@ -358,7 +358,7 @@ namespace OIVA_CSharp
         [DllExport("_eventSystem_EssenceNews")]
         public static int EventSystem_EssenceNews(int subType, long sendTime, int msgId, long fromGroup, long operatorId, long senderId)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=101 群事件-管理员变动
@@ -372,7 +372,7 @@ namespace OIVA_CSharp
         [DllExport("_eventSystem_GroupAdmin")]
         public static int EventSystem_GroupAdmin(int subType, long sendTime, long fromGroup, long fromAccount, long beingOperateAccount)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=104 群事件-群禁言
@@ -387,7 +387,7 @@ namespace OIVA_CSharp
         [DllExport("_eventSystem_GroupBan")]
         public static int EventSystem_GroupBan(int subType, long sendTime, long fromGroup, long fromAccount, long beingOperateAccount, long duration)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=107 群事件-成员名片更新
@@ -402,7 +402,7 @@ namespace OIVA_CSharp
         [DllExport("_eventSystem_GroupBusidCard")]
         public static int EventSystem_GroupBusidCard(int subType, long sendTime, long fromGroup, long fromAccount, string newCard, string oldCard)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=102 群事件-群成员减少
@@ -416,7 +416,7 @@ namespace OIVA_CSharp
         [DllExport("_eventSystem_GroupMemberDecrease")]
         public static int EventSystem_GroupMemberDecrease(int subType, long sendTime, long fromGroup, long fromAccount, long beingOperateAccount)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=103 群事件-群成员增加
@@ -430,7 +430,7 @@ namespace OIVA_CSharp
         [DllExport("_eventSystem_GroupMemberIncrease")]
         public static int EventSystem_GroupMemberIncrease(int subType, long sendTime, long fromGroup, long fromAccount, long beingOperateAccount)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=106 群事件-群内通知
@@ -445,7 +445,7 @@ namespace OIVA_CSharp
         [DllExport("_eventSystem_GroupNotice")]
         public static int EventSystem_GroupNotice(int subType, long sendTime, long fromGroup, long fromAccount, long beingOperateAccount, string honoraryName)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// Type=501 其他客户端在线状态变更
@@ -461,7 +461,7 @@ namespace OIVA_CSharp
         [DllExport("_eventSystem_OtherClientOnlineStatusChanges")]
         public static int EventSystem_OtherClientOnlineStatusChanges(int subType, long sendTime, long fromAccount, long appId, string deviceKind, string deviceName, bool online)
         {
-            return 0;
+            return OIVAConst.消息_忽略;
         }
         /// <summary>
         /// _menuA

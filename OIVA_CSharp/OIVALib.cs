@@ -1,4 +1,5 @@
-﻿using net.r_eg.Conari;
+﻿//DLL实现类，请勿修改
+using net.r_eg.Conari;
 using net.r_eg.Conari.Types;
 using System;
 using System.Runtime.InteropServices;

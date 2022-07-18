@@ -1,11 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using net.r_eg.Conari;
+using net.r_eg.Conari.Types;
+using System;
+using System.Runtime.InteropServices;
 
 namespace OIVA_CSharp
 {
+    public abstract class DllApi
+    {
+        private ConariL CL;
+        public virtual T Bind<T>(string name) where T : class
+        {
+            return CL.bindFunc<T>(name);
+        }
+        public DllApi(string dll)
+        {
+            CL = new ConariL(dll);
+        }
+        ~DllApi() => CL.Dispose();
+        [StructLayout(LayoutKind.Explicit)]
+        public class AnsiCharPtr : IDisposable
+        {
+            public AnsiCharPtr(string str)
+            {
+                if (str is null)
+                {
+                    data = Marshal.StringToHGlobalAnsi("");
+                }
+                else
+                {
+                    data = Marshal.StringToHGlobalAnsi(str);
+                }
+            }
+            [FieldOffset(0)]
+            private readonly IntPtr data;
+            [NativeType]
+            public static implicit operator IntPtr(AnsiCharPtr v)
+            {
+                return v.data;
+            }
+            public void Dispose()
+            {
+                Marshal.FreeHGlobal(data);
+            }
+        }
+
+
+    }
+
     internal partial class OIVADll
     {
         public int AuthCode = 0;

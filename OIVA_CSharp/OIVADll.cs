@@ -1,54 +1,7 @@
-﻿using net.r_eg.Conari;
-using net.r_eg.Conari.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 namespace OIVA_CSharp
 {
-     public abstract class DllApi
-    {
-        private ConariL CL;
-        public virtual T Bind<T>(string name) where T : class
-        {
-            return CL.bindFunc<T>(name);
-        }
-        public DllApi(string dll)
-        {
-            CL = new ConariL(dll);
-        }
-        ~DllApi() => CL.Dispose();
-        [StructLayout(LayoutKind.Explicit)]
-        public class AnsiCharPtr : IDisposable
-        {
-            public AnsiCharPtr(string str)
-            {
-                if (str is null)
-                {
-                    data = Marshal.StringToHGlobalAnsi("");
-                }
-                else
-                {
-                    data = Marshal.StringToHGlobalAnsi(str);
-                }
-            }
-            [FieldOffset(0)]
-            private readonly IntPtr data;
-            [NativeType]
-            public static implicit operator IntPtr(AnsiCharPtr v)
-            {
-                return v.data;
-            }
-            public void Dispose()
-            {
-                Marshal.FreeHGlobal(data);
-            }
-        }
-
-
-    }
     internal static class OIVAConst
     {
         /// <summary> ArrayStruct </summary>
@@ -462,7 +415,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}()", "CanSendImage");
 #endif
-
             return Va_canSendImage_func(AuthCode);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -477,7 +429,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}()", "CanSendRecord");
 #endif
-
             return Va_canSendRecord_func(AuthCode);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -492,7 +443,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}()", "CanSendVoice");
 #endif
-
             return Va_canSendVoice_func(AuthCode);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -526,7 +476,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(friend_id={1})", "DeleteFriend", friend_id);
 #endif
-
             return Va_deleteFriend_func(AuthCode, friend_id);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -542,7 +491,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(MsgId={1})", "DeleteMsg", MsgId);
 #endif
-
             return Va_deleteMsg_func(AuthCode, MsgId);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -558,7 +506,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(user_id={1})", "DeleteUnidirectionalFriend", user_id);
 #endif
-
             return Va_deleteUnidirectionalFriend_func(AuthCode, user_id);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -596,7 +543,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}()", "GetAppDirectory");
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getAppDirectory_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -612,7 +558,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(MsgId={1})", "GetForwardMsg", MsgId);
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getForwardMsg_func(AuthCode, MsgId));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -627,7 +572,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}()", "GetFriendList");
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getFriendList_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -643,7 +587,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(群号={1})", "GetGroupEssenceNews", 群号);
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getGroupEssenceNews_func(AuthCode, 群号));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -680,7 +623,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(群号={1},消息SEQ={2})", "GetGroupHistoricalNews", 群号, 消息SEQ);
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getGroupHistoricalNews_func(AuthCode, 群号, 消息SEQ));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -716,7 +658,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(group_id={1},无视缓存={2})", "GetGroupInfo", group_id, 无视缓存);
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getGroupInfo_func(AuthCode, group_id, 无视缓存));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -731,7 +672,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}()", "GetGroupList");
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getGroupList_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -749,7 +689,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(群号={1},帐号={2},不使用缓存={3})", "GetGroupMemberInfo", 群号, 帐号, 不使用缓存);
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getGroupMemberInfo_func(AuthCode, 群号, 帐号, 不使用缓存));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -765,7 +704,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(群号={1})", "GetGroupMemberList", 群号);
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getGroupMemberList_func(AuthCode, 群号));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -781,7 +719,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(群号={1})", "GetGroupNotice", 群号);
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getGroupNotice_func(AuthCode, 群号));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -797,7 +734,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(群号={1})", "GetGroupRootdirectoryfile", 群号);
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getGroupRootdirectoryfile_func(AuthCode, 群号));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -813,7 +749,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(群号={1})", "GetGroupSpaceInfo", 群号);
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getGroupSpaceInfo_func(AuthCode, 群号));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -847,7 +782,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}()", "GetGroupSystemMsg");
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getGroupSystemMsg_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -863,7 +797,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(群号={1})", "GetGroupTotalAtRemainingNumber", 群号);
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getGroupTotalAtRemainingNumber_func(AuthCode, 群号));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -897,7 +830,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}()", "GetGuildList");
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getGuildList_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -974,7 +906,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}()", "GetGuildServiceProfile");
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getGuildServiceProfile_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1007,7 +938,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}()", "GetLoginNick");
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getLoginNick_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1022,7 +952,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}()", "GetLoginQQ");
 #endif
-
             return Va_getLoginQQ_func(AuthCode);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1038,7 +967,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(MsgId={1})", "GetMessageInfo", MsgId);
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getMessageInfo_func(AuthCode, MsgId));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1071,7 +999,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}()", "GetQidianAccountInfo");
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getQidianAccountInfo_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1108,7 +1035,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}()", "GetRobotInfo");
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getRobotInfo_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1124,7 +1050,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(无视缓存={1})", "GetRobotOnlineDevice", 无视缓存);
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getRobotOnlineDevice_func(AuthCode, 无视缓存));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1139,7 +1064,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}()", "GetRunState");
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getRunState_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1154,7 +1078,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}()", "GetRunTime");
 #endif
-
             return Va_getRunTime_func(AuthCode);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1171,7 +1094,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(账号={1},不使用缓存={2})", "GetStrangerInfo", 账号, 不使用缓存);
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getStrangerInfo_func(AuthCode, 账号, 不使用缓存));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1186,7 +1108,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}()", "GetUnidirectionalFriendList");
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getUnidirectionalFriendList_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1202,7 +1123,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(账号={1})", "GetUserVipInfo", 账号);
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getUserVipInfo_func(AuthCode, 账号));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1217,7 +1137,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}()", "GetVersion");
 #endif
-
             return Marshal.PtrToStringAnsi(Va_getVersion_func(AuthCode));
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1290,7 +1209,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}()", "OverloadEventFilter");
 #endif
-
             return Va_overloadEventFilter_func(AuthCode);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1670,7 +1588,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(群号={1},帐号={2},成为管理员={3})", "SetGroupAdmin", 群号, 帐号, 成为管理员);
 #endif
-
             return Va_setGroupAdmin_func(AuthCode, 群号, 帐号, 成为管理员);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1728,7 +1645,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(群号={1},帐号={2},禁言时间={3})", "SetGroupBan", 群号, 帐号, 禁言时间);
 #endif
-
             return Va_setGroupBan_func(AuthCode, 群号, 帐号, 禁言时间);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1765,7 +1681,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(消息ID={1},设为精华消息={2})", "SetGroupEssenceNews", 消息ID, 设为精华消息);
 #endif
-
             return Va_setGroupEssenceNews_func(AuthCode, 消息ID, 设为精华消息);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1783,7 +1698,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(群号={1},帐号={2},拒绝再加群={3})", "SetGroupKick", 群号, 帐号, 拒绝再加群);
 #endif
-
             return Va_setGroupKick_func(AuthCode, 群号, 帐号, 拒绝再加群);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1800,7 +1714,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(群号={1},是否解散={2})", "SetGroupLeave", 群号, 是否解散);
 #endif
-
             return Va_setGroupLeave_func(AuthCode, 群号, 是否解散);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1857,7 +1770,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(群号={1},开启禁言={2})", "SetGroupWholeBan", 群号, 开启禁言);
 #endif
-
             return Va_setGroupWholeBan_func(AuthCode, 群号, 开启禁言);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -1929,7 +1841,6 @@ namespace OIVA_CSharp
 #if DEBUG //调试信息 ，仅DEBUG编译可见
             OutputDebugText("{0}(delay={1})", "SetRestart", delay);
 #endif
-
             return Va_setRestart_func(AuthCode, delay);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]

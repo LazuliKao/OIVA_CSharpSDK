@@ -1,4 +1,7 @@
-﻿using System;
+﻿//本文件使用脚本自动生成
+//请勿随意修改，以免无法运行
+//如有问题或API需要更新请联系作者：https://github.com/LazuliKao/OIVA_CSharpSDK/
+using System;
 using System.Runtime.InteropServices;
 namespace OIVA_CSharp
 {
@@ -24,78 +27,7 @@ namespace OIVA_CSharp
         public const int GENERIC_READ = -2147483648;
         public const int GENERIC_WRITE = 1073741824;
         public const int HEAP_ZERO_MEMORY = 8;
-        /// <summary> HashTableStruct </summary>
-        public const int ht_cbSize = 28;
-        public const int ht_count = 12;
-        public const int ht_eArray = 24;
-        public const int ht_hAlloctor = 0;
-        public const int ht_loadFactor = 20;
-        public const int ht_table = 4;
-        public const int ht_tableLenth = 8;
-        public const int ht_threshold = 16;
         public const int INFINITE = -1;
-        /// <summary> 未知错误 </summary>
-        public const int JSON_ERROR = -1;
-        /// <summary> 参数错误 </summary>
-        public const int JSON_INVALIDARG = -2;
-        /// <summary> 无效的属性名 </summary>
-        public const int JSON_INVALIDNAME = -4;
-        /// <summary> 错误的值 </summary>
-        public const int JSON_INVALIDVALUE = -6;
-        /// <summary> 内存错误 </summary>
-        public const int JSON_MEMORY = -3;
-        /// <summary> 无下一个引号 </summary>
-        public const int JSON_NONEXTQUOTE = -7;
-        /// <summary> 错误的父 </summary>
-        public const int JSON_OBJECTPARENT = -5;
-        /// <summary> 成功 </summary>
-        public const int JSON_OK = 0;
-        public const int jv_cbSize = 40;
-        /// <summary> 是否文档 </summary>
-        public const int jv_doc = 36;
-        public const int jv_hashCode = 4;
-        public const int jv_key = 8;
-        public const int jv_next = 20;
-        public const int jv_parent = 28;
-        /// <summary> 元数据 </summary>
-        public const int jv_raw = 32;
-        public const int jv_type = 24;
-        /// <summary> 8字节 </summary>
-        public const int jv_value = 12;
-        public const int jvp_isEnded = 3;
-        public const int jvp_needName = 1;
-        public const int jvp_needValue = 2;
-        public const int JVPS_INDEX = 2;
-        public const int JVPS_NAME = 1;
-        public const int jvstep_cbSize = 12;
-        public const int jvstep_flags = 0;
-        public const int jvstep_index = 8;
-        public const int jvstep_name = 4;
-        public const int JVTYPE_ARRAY = 5;
-        public const int JVTYPE_BOOL = 3;
-        public const int JVTYPE_DOUBLE = 1;
-        public const int JVTYPE_LONG = 2;
-        public const int JVTYPE_NULL = 0;
-        public const int JVTYPE_OBJECT = 6;
-        public const int JVTYPE_STRING = 4;
-        public const int JVTYPE_UNDEFINED = -1;
-        public const int JV解析_忽略前后文本 = 2;
-        /// <summary> JVTYPE_LONG </summary>
-        public const int JV类型_长整数型 = 2;
-        /// <summary> JVTYPE_OBJECT </summary>
-        public const int JV类型_对象 = 6;
-        /// <summary> JVTYPE_NULL </summary>
-        public const int JV类型_空 = 0;
-        /// <summary> JVTYPE_BOOL </summary>
-        public const int JV类型_逻辑型 = 3;
-        /// <summary> JVTYPE_ARRAY </summary>
-        public const int JV类型_数组 = 5;
-        /// <summary> JVTYPE_DOUBLE </summary>
-        public const int JV类型_双精度型 = 1;
-        /// <summary> JVTYPE_UNDEFINED </summary>
-        public const int JV类型_未定义 = -1;
-        /// <summary> JVTYPE_STRING </summary>
-        public const int JV类型_文本型 = 4;
         public const int LCMAP_FULLWIDTH = 8388608;
         public const int LCMAP_HALFWIDTH = 4194304;
         /// <summary> LinkListStruct </summary>

@@ -1,6 +1,5 @@
 ﻿
 using System.Runtime.InteropServices;
-//[assembly: ComVisible(true)]
 
 namespace OIVA_CSharp
 {
@@ -8,7 +7,8 @@ namespace OIVA_CSharp
     {
         // [请填写] 应用ID
         public const string AppId = "com.example.demo";
-
+        //使用官方工具生成的机器码填于此处，工具下载链接：https://bbs.oiva.cc/t/301
+        public const string MarkCode = "OIVA-A73F730-BB7E6-2ABCD-E8CC6-BAEBB-4BB18";
 
 
 
@@ -45,16 +45,23 @@ namespace OIVA_CSharp
 
 
 
-
+        /// <summary>
+        /// API实例
+        /// 可用调用OIVA的各种方法
+        /// （请勿修改：会在Initialize过程创建）
+        /// </summary>
         internal static OIVADll Api;
         /// <summary>
         /// 应用的ApiVer、Appid //请勿修改本子程序
         /// </summary>
         /// <returns><see cref="string"/></returns>
-        [DllExport("AppInfo")]
+        [DllExport("AppInfo", CallingConvention = CallingConvention.StdCall)]
         [return: MarshalAs(UnmanagedType.AnsiBStr)]
-        public static string AppInfo() {
-            return "4,"+AppId;
+        public static string AppInfo()
+        {
+            //【不要】在本子程序处理其他任何代码，以免发生异常情况。如需执行初始化代码请在Startup事件中执行（Type=1001）。
+            var ApiVer = 4;
+            return ApiVer + "," + AppId + "," + MarkCode;
         }
         // + AppId;
         /// <summary>
@@ -62,7 +69,7 @@ namespace OIVA_CSharp
         /// </summary>
         /// <param name="AuthCode">AuthCode</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("Initialize")]
+        [DllExport("Initialize", CallingConvention = CallingConvention.StdCall)]
         public static int Initialize(int AuthCode)
         {
             Api = new OIVADll(AuthCode);//初始化API
@@ -73,7 +80,7 @@ namespace OIVA_CSharp
         /// Type=1004 应用将被停用
         /// </summary>
         /// <returns><see cref = "int" /></ returns >
-        [DllExport("_eventDisable")]
+        [DllExport("_eventDisable", CallingConvention = CallingConvention.StdCall)]
         public static int EventDisable()
         {
             return 0;
@@ -82,7 +89,7 @@ namespace OIVA_CSharp
         /// Type=1003 应用已被启用
         /// </summary>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventEnable")]
+        [DllExport("_eventEnable", CallingConvention = CallingConvention.StdCall)]
         public static int EventEnable()
         {
             return 0;
@@ -91,7 +98,7 @@ namespace OIVA_CSharp
         /// Type=1002 OIVA退出
         /// </summary>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventExit")]
+        [DllExport("_eventExit", CallingConvention = CallingConvention.StdCall)]
         public static int EventExit()
         {
             return 0;
@@ -103,7 +110,7 @@ namespace OIVA_CSharp
         /// <param name="sendTime">发送时间(时间戳)</param>,
         /// <param name="fromAccount">来源帐号</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventFriend_Add")]
+        [DllExport("_eventFriend_Add", CallingConvention = CallingConvention.StdCall)]
         public static int EventFriend_Add(int subType, long sendTime, long fromAccount)
         {
             return OIVAConst.消息_忽略;
@@ -116,7 +123,7 @@ namespace OIVA_CSharp
         /// <param name="fromAccount">来源帐号</param>,
         /// <param name="file">接收文件信息</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventFriend_File")]
+        [DllExport("_eventFriend_File", CallingConvention = CallingConvention.StdCall)]
         public static int EventFriend_File(int subType, long sendTime, long fromAccount, string file)
         {
             return OIVAConst.消息_忽略;
@@ -133,7 +140,7 @@ namespace OIVA_CSharp
         /// <param name="msg">消息内容</param>,
         /// <param name="font">字体</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventGroupMsg")]
+        [DllExport("_eventGroupMsg", CallingConvention = CallingConvention.StdCall)]
         public static int EventGroupMsg(int subType, long sendTime, int msgId, long fromGroup, long fromAccount, string fromAnonymous, string msg, int font)
         {
             return OIVAConst.消息_忽略;
@@ -147,7 +154,7 @@ namespace OIVA_CSharp
         /// <param name="fromAccount">来源帐号</param>,
         /// <param name="file">上传文件信息</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventGroupUpload")]
+        [DllExport("_eventGroupUpload", CallingConvention = CallingConvention.StdCall)]
         public static int EventGroupUpload(int subType, long sendTime, long fromGroup, long fromAccount, string file)
         {
             return OIVAConst.消息_忽略;
@@ -163,7 +170,7 @@ namespace OIVA_CSharp
         /// <param name="beingOperateAccount">被操作帐号</param>,
         /// <param name="channel_info">频道信息 之后用API来解决</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventGuild_ChannelCreate")]
+        [DllExport("_eventGuild_ChannelCreate", CallingConvention = CallingConvention.StdCall)]
         public static int EventGuild_ChannelCreate(int subType, long sendTime, string guildId, string channelId, long fromAccount, string beingOperateAccount, string channel_info)
         {
             return OIVAConst.消息_忽略;
@@ -179,7 +186,7 @@ namespace OIVA_CSharp
         /// <param name="beingOperateAccount">被操作帐号</param>,
         /// <param name="channel_info">频道信息 之后用API来解决</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventGuild_ChannelDel")]
+        [DllExport("_eventGuild_ChannelDel", CallingConvention = CallingConvention.StdCall)]
         public static int EventGuild_ChannelDel(int subType, long sendTime, string guildId, string channelId, long fromAccount, string beingOperateAccount, string channel_info)
         {
             return OIVAConst.消息_忽略;
@@ -196,7 +203,7 @@ namespace OIVA_CSharp
         /// <param name="old_info">更新前的频道信息 之后用API来解决</param>,
         /// <param name="new_info">更新后的频道信息 之后用API来解决</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventGuild_ChannelUpdated")]
+        [DllExport("_eventGuild_ChannelUpdated", CallingConvention = CallingConvention.StdCall)]
         public static int EventGuild_ChannelUpdated(int subType, long sendTime, string guildId, string channelId, long fromAccount, string beingOperateAccount, string old_info, string new_info)
         {
             return OIVAConst.消息_忽略;
@@ -212,7 +219,7 @@ namespace OIVA_CSharp
         /// <param name="fromAccount">来源帐号</param>,
         /// <param name="current_reactions">当前消息被贴表情列表 之后用API来解决</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventGuild_Emoji")]
+        [DllExport("_eventGuild_Emoji", CallingConvention = CallingConvention.StdCall)]
         public static int EventGuild_Emoji(int subType, long sendTime, string msgId, string guildId, string channelId, string fromAccount, string current_reactions)
         {
             return OIVAConst.消息_忽略;
@@ -229,7 +236,7 @@ namespace OIVA_CSharp
         /// <param name="senderNickName">发件人昵称</param>,
         /// <param name="msg">消息内容</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventGuildMsg")]
+        [DllExport("_eventGuildMsg", CallingConvention = CallingConvention.StdCall)]
         public static int EventGuildMsg(int subType, long sendTime, string msgId, string guildId, string channelId, string senderId, string senderNickName, string msg)
         {
             return OIVAConst.消息_忽略;
@@ -243,7 +250,7 @@ namespace OIVA_CSharp
         /// <param name="fromAccount">来源帐号</param>,
         /// <param name="beingOperateAccount">被操作帐号(仅子类型为1时可用)</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventPoke_Friend")]
+        [DllExport("_eventPoke_Friend", CallingConvention = CallingConvention.StdCall)]
         public static int EventPoke_Friend(int subType, long sendTime, long senderId, long fromAccount, long beingOperateAccount)
         {
             return OIVAConst.消息_忽略;
@@ -258,7 +265,7 @@ namespace OIVA_CSharp
         /// <param name="msg">消息内容</param>,
         /// <param name="font">字体</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventPrivateMsg")]
+        [DllExport("_eventPrivateMsg", CallingConvention = CallingConvention.StdCall)]
         public static int EventPrivateMsg(int subType, long sendTime, int msgId, long fromAccount, string msg, int font)
         {
             return OIVAConst.消息_忽略;
@@ -272,7 +279,7 @@ namespace OIVA_CSharp
         /// <param name="msg">附言</param>,
         /// <param name="responseFlag">反馈标识(处理请求用)</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventRequest_AddFriend")]
+        [DllExport("_eventRequest_AddFriend", CallingConvention = CallingConvention.StdCall)]
         public static int EventRequest_AddFriend(int subType, long sendTime, long fromAccount, string msg, string responseFlag)
         {
             return OIVAConst.消息_忽略;
@@ -287,7 +294,7 @@ namespace OIVA_CSharp
         /// <param name="msg">附言</param>,
         /// <param name="responseFlag">反馈标识(处理请求用)</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventRequest_AddGroup")]
+        [DllExport("_eventRequest_AddGroup", CallingConvention = CallingConvention.StdCall)]
         public static int EventRequest_AddGroup(int subType, long sendTime, long fromGroup, long fromAccount, string msg, string responseFlag)
         {
             return OIVAConst.消息_忽略;
@@ -300,7 +307,7 @@ namespace OIVA_CSharp
         /// <param name="msgId">消息ID</param>,
         /// <param name="fromAccount">来源帐号</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventRevoke_Friend")]
+        [DllExport("_eventRevoke_Friend", CallingConvention = CallingConvention.StdCall)]
         public static int EventRevoke_Friend(int subType, long sendTime, int msgId, long fromAccount)
         {
             return OIVAConst.消息_忽略;
@@ -315,7 +322,7 @@ namespace OIVA_CSharp
         /// <param name="fromAccount">来源帐号(被撤回消息的帐号)</param>,
         /// <param name="beingOperateAccount">被操作帐号(使用撤回功能的帐号)</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventRevoke_Group")]
+        [DllExport("_eventRevoke_Group", CallingConvention = CallingConvention.StdCall)]
         public static int EventRevoke_Group(int subType, long sendTime, int msgId, long fromGroup, long fromAccount, long beingOperateAccount)
         {
             return OIVAConst.消息_忽略;
@@ -331,7 +338,7 @@ namespace OIVA_CSharp
         /// <param name="fromAccount">来源帐号(被撤回消息的帐号)</param>,
         /// <param name="beingOperateAccount">被操作帐号(使用撤回功能的帐号)，频道的被操作帐号都是文本型的</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventRevoke_Guild")]
+        [DllExport("_eventRevoke_Guild", CallingConvention = CallingConvention.StdCall)]
         public static int EventRevoke_Guild(int subType, long sendTime, string msgId, string guildId, string channelId, long fromAccount, string beingOperateAccount)
         {
             return OIVAConst.消息_忽略;
@@ -340,7 +347,7 @@ namespace OIVA_CSharp
         /// Type=1001 OIVA启动
         /// </summary>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventStartup")]
+        [DllExport("_eventStartup", CallingConvention = CallingConvention.StdCall)]
         public static int EventStartup()
         {
             return OIVAConst.消息_忽略;
@@ -355,7 +362,7 @@ namespace OIVA_CSharp
         /// <param name="operatorId">操作员帐号</param>,
         /// <param name="senderId">发送人帐号</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventSystem_EssenceNews")]
+        [DllExport("_eventSystem_EssenceNews", CallingConvention = CallingConvention.StdCall)]
         public static int EventSystem_EssenceNews(int subType, long sendTime, int msgId, long fromGroup, long operatorId, long senderId)
         {
             return OIVAConst.消息_忽略;
@@ -369,7 +376,7 @@ namespace OIVA_CSharp
         /// <param name="fromAccount">来源帐号</param>,
         /// <param name="beingOperateAccount">被操作帐号</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventSystem_GroupAdmin")]
+        [DllExport("_eventSystem_GroupAdmin", CallingConvention = CallingConvention.StdCall)]
         public static int EventSystem_GroupAdmin(int subType, long sendTime, long fromGroup, long fromAccount, long beingOperateAccount)
         {
             return OIVAConst.消息_忽略;
@@ -384,7 +391,7 @@ namespace OIVA_CSharp
         /// <param name="beingOperateAccount">被操作帐号(若为全群禁言/解禁，则本参数为 0)</param>,
         /// <param name="duration">禁言时长(单位 秒，仅子类型为2时可用)</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventSystem_GroupBan")]
+        [DllExport("_eventSystem_GroupBan", CallingConvention = CallingConvention.StdCall)]
         public static int EventSystem_GroupBan(int subType, long sendTime, long fromGroup, long fromAccount, long beingOperateAccount, long duration)
         {
             return OIVAConst.消息_忽略;
@@ -399,7 +406,7 @@ namespace OIVA_CSharp
         /// <param name="newCard">新名片</param>,
         /// <param name="oldCard">旧名片</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventSystem_GroupBusidCard")]
+        [DllExport("_eventSystem_GroupBusidCard", CallingConvention = CallingConvention.StdCall)]
         public static int EventSystem_GroupBusidCard(int subType, long sendTime, long fromGroup, long fromAccount, string newCard, string oldCard)
         {
             return OIVAConst.消息_忽略;
@@ -413,7 +420,7 @@ namespace OIVA_CSharp
         /// <param name="fromAccount">操作者帐号(仅子类型为2时存在)</param>,
         /// <param name="beingOperateAccount">被操作帐号</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventSystem_GroupMemberDecrease")]
+        [DllExport("_eventSystem_GroupMemberDecrease", CallingConvention = CallingConvention.StdCall)]
         public static int EventSystem_GroupMemberDecrease(int subType, long sendTime, long fromGroup, long fromAccount, long beingOperateAccount)
         {
             return OIVAConst.消息_忽略;
@@ -427,7 +434,7 @@ namespace OIVA_CSharp
         /// <param name="fromAccount">操作者帐号(即管理员帐号)[此项无值, 详见:https://github.com/Mrs4s/go-cqhttp/issues/721]</param>,
         /// <param name="beingOperateAccount">被操作帐号(即加群的帐号)</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventSystem_GroupMemberIncrease")]
+        [DllExport("_eventSystem_GroupMemberIncrease", CallingConvention = CallingConvention.StdCall)]
         public static int EventSystem_GroupMemberIncrease(int subType, long sendTime, long fromGroup, long fromAccount, long beingOperateAccount)
         {
             return OIVAConst.消息_忽略;
@@ -442,7 +449,7 @@ namespace OIVA_CSharp
         /// <param name="beingOperateAccount">被操作帐号(仅子类型为1时可用)</param>,
         /// <param name="honoraryName">群荣誉名称(仅子类型为3时可用)</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventSystem_GroupNotice")]
+        [DllExport("_eventSystem_GroupNotice", CallingConvention = CallingConvention.StdCall)]
         public static int EventSystem_GroupNotice(int subType, long sendTime, long fromGroup, long fromAccount, long beingOperateAccount, string honoraryName)
         {
             return OIVAConst.消息_忽略;
@@ -458,7 +465,7 @@ namespace OIVA_CSharp
         /// <param name="deviceName">设备名称</param>,
         /// <param name="online">在线状态</param>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_eventSystem_OtherClientOnlineStatusChanges")]
+        [DllExport("_eventSystem_OtherClientOnlineStatusChanges", CallingConvention = CallingConvention.StdCall)]
         public static int EventSystem_OtherClientOnlineStatusChanges(int subType, long sendTime, long fromAccount, long appId, string deviceKind, string deviceName, bool online)
         {
             return OIVAConst.消息_忽略;
@@ -467,7 +474,7 @@ namespace OIVA_CSharp
         /// _menuA
         /// </summary>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_menuA")]
+        [DllExport("_menuA", CallingConvention = CallingConvention.StdCall)]
         public static int MenuA()
         {
             return 0;
@@ -476,7 +483,7 @@ namespace OIVA_CSharp
         /// _menuB
         /// </summary>
         /// <returns><see cref="int"/></returns>
-        [DllExport("_menuB")]
+        [DllExport("_menuB", CallingConvention = CallingConvention.StdCall)]
         public static int MenuB()
         {
             return 0;

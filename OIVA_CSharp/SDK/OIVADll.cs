@@ -230,7 +230,6 @@ namespace OIVA_CSharp.SDK
             Va_addLog_func = Bind<Va_addLog_delegate>("Va_addLog");
             Va_canSendImage_func = Bind<Va_canSendImage_delegate>("Va_canSendImage");
             Va_canSendRecord_func = Bind<Va_canSendRecord_delegate>("Va_canSendRecord");
-            Va_canSendVoice_func = Bind<Va_canSendVoice_delegate>("Va_canSendVoice");
             Va_checkUrlSafety_func = Bind<Va_checkUrlSafety_delegate>("Va_checkUrlSafety");
             Va_deleteFriend_func = Bind<Va_deleteFriend_delegate>("Va_deleteFriend");
             Va_deleteMsg_func = Bind<Va_deleteMsg_delegate>("Va_deleteMsg");
@@ -362,20 +361,6 @@ namespace OIVA_CSharp.SDK
             OutputDebugText("{0}()", "CanSendRecord");
 #endif
             return Va_canSendRecord_func(AuthCode);
-        }
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private delegate int Va_canSendVoice_delegate(int AuthCode);
-        private readonly Va_canSendVoice_delegate Va_canSendVoice_func;
-        /// <summary>
-        /// 是否可以发送语音
-        /// </summary>
-        /// <returns><see cref="int"/></returns>
-        public int CanSendVoice()
-        {
-#if DEBUG //调试信息 ，仅DEBUG编译可见
-            OutputDebugText("{0}()", "CanSendVoice");
-#endif
-            return Va_canSendVoice_func(AuthCode);
         }
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         private delegate int Va_checkUrlSafety_delegate(int AuthCode, IntPtr url);

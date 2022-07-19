@@ -224,7 +224,7 @@ namespace OIVA_CSharp.SDK
     }
     public partial class OIVADll : DllApi
     {
-        public OIVADll(int AuthCode) : base("OIVA.dll")
+        public OIVADll(int AuthCode) : base("oiva.dll")
         {
             this.AuthCode = AuthCode;
             Va_addLog_func = Bind<Va_addLog_delegate>("Va_addLog");

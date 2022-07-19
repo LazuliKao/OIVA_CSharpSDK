@@ -79,10 +79,14 @@ namespace OIVA_CSharp.SDK
         /// </summary>
         /// <param name="text"></param>
         /// <param name="args"></param>
-        public void OutputDebugText(string text, string funcname, params object[] args)
+        public void OutputDebugText(string text, params object[] args)
         {
-            if (funcname == "AddLog") return;//避免死循环（堆栈溢出）
-            AddLog(OIVAConst.Log_Debug, Main.AppId, string.Format(text, funcname, args));
+            if (args[0].ToString() == "AddLog") return;//避免死循环（堆栈溢出）
+            try
+            {
+                AddLog(OIVAConst.Log_Debug, Main.AppId, string.Format(text, args));
+            }
+            catch (Exception) { }
         }
 #endif
     }

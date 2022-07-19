@@ -1,6 +1,8 @@
 ﻿
 using OIVA_CSharp.SDK;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+
 namespace OIVA_CSharp
 {
     public static class Main
@@ -8,7 +10,7 @@ namespace OIVA_CSharp
         // [请填写] 应用ID
         public const string AppId = "com.example.demo";
         //使用官方工具生成的机器码填于此处，工具下载链接：https://bbs.oiva.cc/t/301
-        public const string MarkCode = "OIVA-A73F730-BB7E6-2ABCD-E8CC6-BAEBB-4BB18";
+        public const string MarkCode = "OIVA-36EC2C9-1C8E4-07DE9-95E41-73053-5C209";
 
 
 
@@ -143,11 +145,6 @@ namespace OIVA_CSharp
         [DllExport("_eventGroupMsg", CallingConvention = CallingConvention.StdCall)]
         public static int EventGroupMsg(int subType, long sendTime, int msgId, long fromGroup, long fromAccount, string fromAnonymous, string msg, int font)
         {
-            var message = new CombinedMessage(Api)
-                                .AddForwardMsgId("233")
-                                .AddCustomForward("name", "uin", "xxx")
-                                .AddCustomForward("name", "uin", "xxx");
-            string json = message.ToString();
             return OIVAConst.消息_忽略;
         }
         /// <summary>
